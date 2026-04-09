@@ -3,7 +3,10 @@
 <head><!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
+  window.dataLayer = window.dataLayer || [  ,{id:"nestor",nombre:"Néstor Ghigliotto",empresa:null,rubro:"Pintura · Terminaciones",rubroid:"pintura",desc:"Trabajos de durlock, PVC, pisos flotantes y pintura en general. Colocación de papel mural.",tags:["Durlock","PVC","Pisos flotantes","Pintura","Papel mural"],precio:"A convenir",tel:"5492324552698",nuevo:true,matriculado:false,ig:null,color:["#EAE8F0","#2A1A4A"],initials:"NG"}
+  ,{id:"gustavo",nombre:"Gustavo Martín Grasso",empresa:null,rubro:"Albañilería · Plomería",rubroid:"albanileria",desc:"Refacciones y trabajos chicos de albañilería y plomería. Trabaja solo o con un peón de confianza. Ideal para trabajos en casas de familia.",tags:["Refacciones","Albañilería","Plomería","Trabajos chicos"],precio:"A convenir",tel:"5492324581736",nuevo:true,matriculado:false,ig:null,color:["#F0EDE0","#3A3010"],initials:"GG"}
+  ,{id:"matias",nombre:"Matías Mansilla",empresa:null,rubro:"Herrería de Diseño",rubroid:"herreria",desc:"Herrería a medida: muebles, portones y cerramientos de parrillas. Especialistas en divisiones de ambientes con diseño.",tags:["Muebles a medida","Portones","Cerramientos parrillas","Divisiones de ambientes"],precio:"A convenir",tel:"5492324468794",nuevo:true,matriculado:false,ig:null,color:["#F5EAE0","#3A1A00"],initials:"MM"}
+];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-LDWC8F76VS');
@@ -162,6 +165,10 @@ const FOTOS = {
     "https://res.cloudinary.com/dsxydndhk/image/upload/v1775522328/WhatsApp_Image_2026-04-06_at_8.51.34_PM_o2stes.jpg",
     "https://res.cloudinary.com/dsxydndhk/image/upload/v1775522328/WhatsApp_Image_2026-04-06_at_8.51.33_PM_ef4edo.jpg"
   ],
+  matias:     [
+    "https://res.cloudinary.com/dsxydndhk/image/upload/v1775600044/WhatsApp_Image_2026-04-07_at_2.56.29_PM_isyic7.jpg",
+    "https://res.cloudinary.com/dsxydndhk/image/upload/v1775600044/WhatsApp_Image_2026-04-07_at_2.56.29_PM_1_lrhfb4.jpg"
+  ],
   escudero:   [
     "https://res.cloudinary.com/dsxydndhk/image/upload/v1775521846/WhatsApp_Image_2026-04-06_at_7.18.23_PM_osfiwp.jpg",
     "https://res.cloudinary.com/dsxydndhk/image/upload/v1775521846/WhatsApp_Image_2026-04-06_at_7.06.58_PM_grxdru.jpg",
@@ -187,7 +194,7 @@ const profesionales = [
   {id:"mendez",nombre:"Ezequiel Méndez",empresa:null,rubro:"Plomería · Gas",rubroid:"plomeria",desc:"Plomería y gas en general. Instalaciones, reparaciones y mantenimiento.",tags:["Plomería","Gas","Instalaciones","Reparaciones"],precio:"A convenir",tel:"5492324692169",nuevo:true,matriculado:false,ig:null,color:["#EAF0F5","#1A2E3A"],initials:"EM"},{id:"pablo",nombre:"Pablo Branchini",empresa:null,rubro:"Construcción · Albañilería",rubroid:"albañilería",desc:"Construcciones y refacciones en general. Especializado en albañilería y techos: bases, mampostería, revoques, carpetas, colocación de aberturas y revestimientos cerámicos y porcelanatos.",tags:["Albañilería","Techos","Revestimientos","Aberturas"],precio:"Se cotiza por trabajo",tel:"5492324589560",nuevo:true,matriculado:false,ig:null,color:["#F0EDE8","#3A2E20"],initials:"PB"},{id:"federico",nombre:"Federico Benítez",empresa:null,rubro:"Pintura · Albañilería",rubroid:"pintura",desc:"Pintura de casas interior y exterior, colocación de PVC y arreglos de albañilería en general.",tags:["Pintura interior","Pintura exterior","PVC","Albañilería"],precio:"A convenir",tel:"5492334551848",nuevo:true,matriculado:false,ig:"fede_pintura",color:["#F5F0DC","#4A3A00"],initials:"FB"}
 ];
 
-const labelRubro = {todos:"Todos",electricidad:"Electricidad",herreria:"Herrería",plomeria:"Plomería",gas:"Gas",pintura:"Pintura",jardineria:"Jardinería",albañileria:"Albañilería"};
+const labelRubro = {todos:"Todos",electricidad:"Electricidad",herreria:"Herrería",plomeria:"Plomería",gas:"Gas",pintura:"Pintura",jardineria:"Jardinería",albanileria:"Albañilería",albañileria:"Albañilería"};
 let rubroActivo = "todos";
 
 function abrirLb(src){document.getElementById('lb-img').src=src;document.getElementById('lb').classList.add('open');}
