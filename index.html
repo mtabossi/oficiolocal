@@ -4,7 +4,6 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Oficio Local · Mercedes</title>
-  <!-- Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-LDWC8F76VS"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -14,28 +13,14 @@
   </script>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Lora:ital,wght@0,400;1,400&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet"/>
   <style>
-    :root {
-      --azul: #1B2E4B; --azul-medio: #2C4A72;
-      --amarillo: #E8B84B; --blanco-roto: #F4F1EA;
-      --gris-calido: #E8E4DB; --gris-texto: #6B6560; --texto: #1B2020;
-    }
+    :root { --azul: #1B2E4B; --azul-medio: #2C4A72; --amarillo: #E8B84B; --blanco-roto: #F4F1EA; --gris-calido: #E8E4DB; --gris-texto: #6B6560; --texto: #1B2020; }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: var(--blanco-roto); color: var(--texto); font-family: 'Barlow', sans-serif; min-height: 100vh; }
     .header { background: var(--azul); position: relative; overflow: hidden; }
-    .header-grid {
-      position: absolute; inset: 0;
-      background-image:
-        repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 41px),
-        repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 41px);
-      pointer-events: none;
-    }
+    .header-grid { position: absolute; inset: 0; background-image: repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 41px), repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 41px); pointer-events: none; }
     .header-inner { position: relative; max-width: 680px; margin: 0 auto; padding: 2rem 1.5rem 1.75rem; }
     .logo-wrap { display: flex; align-items: center; gap: 14px; }
-    .logo-mark {
-      width: 48px; height: 48px; flex-shrink: 0; background: var(--amarillo);
-      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-      display: flex; align-items: center; justify-content: center;
-    }
+    .logo-mark { width: 48px; height: 48px; flex-shrink: 0; background: var(--amarillo); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); display: flex; align-items: center; justify-content: center; }
     .logo-mark svg { width: 24px; height: 24px; }
     .logo-text { display: flex; flex-direction: column; line-height: 1; }
     .logo-nombre { font-family: 'Barlow Condensed', sans-serif; font-size: 30px; font-weight: 700; color: #fff; letter-spacing: 0.04em; text-transform: uppercase; }
@@ -127,6 +112,18 @@
   const SUPABASE_KEY = 'sb_publishable_Pv9JKNdeX2hDzZV3YqWfjA_NXYOcy5v';
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+  const RUBROS = [
+    { id: 'todos', label: 'Todos' },
+    { id: 'electricidad', label: 'Electricidad' },
+    { id: 'plomeria', label: 'Plomería' },
+    { id: 'gas', label: 'Gas' },
+    { id: 'albanileria', label: 'Albañilería' },
+    { id: 'herreria', label: 'Herrería' },
+    { id: 'jardineria', label: 'Jardinería' },
+    { id: 'pintura', label: 'Pintura' },
+    { id: 'carpinteria', label: 'Carpintería' }
+  ];
+
   let todos = [];
   let rubroActivo = 'todos';
 
@@ -145,9 +142,8 @@
   }
 
   function renderChips() {
-    const rubros = ['todos', ...new Set(todos.map(p => p.rubro))];
-    document.getElementById('chips').innerHTML = rubros.map(r =>
-      `<button class="chip ${r === rubroActivo ? 'active' : ''}" onclick="setRubro('${r}')">${r === 'todos' ? 'Todos' : r}</button>`
+    document.getElementById('chips').innerHTML = RUBROS.map(r =>
+      `<button class="chip ${r.id === rubroActivo ? 'active' : ''}" onclick="setRubro('${r.id}')">${r.label}</button>`
     ).join('');
   }
 
@@ -156,7 +152,7 @@
   function filtrar() {
     const lista = document.getElementById('lista');
     const label = document.getElementById('label');
-    let filtrados = rubroActivo === 'todos' ? [...todos] : todos.filter(p => p.rubro === rubroActivo);
+    let filtrados = rubroActivo === 'todos' ? [...todos] : todos.filter(p => p.rubro_id === rubroActivo);
     filtrados.sort((a, b) => ordenPlan(a.plan, a.fundador) - ordenPlan(b.plan, b.fundador));
     label.textContent = filtrados.length + ' profesional' + (filtrados.length !== 1 ? 'es' : '');
     if (!filtrados.length) { lista.innerHTML = '<div class="empty">No hay profesionales en este rubro todavía.</div>'; return; }
