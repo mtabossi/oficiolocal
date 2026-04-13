@@ -23,11 +23,18 @@
     .card h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; color: var(--azul); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 1rem; }
     .form-group { margin-bottom: 1rem; }
     label { display: block; font-size: 11px; font-weight: 600; color: var(--azul); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 5px; }
-    input, textarea, select { width: 100%; padding: 9px 12px; border: 1px solid #ddd; border-radius: 3px; font-size: 14px; font-family: 'Barlow', sans-serif; background: #fff; transition: border 0.15s; }
+    input, textarea { width: 100%; padding: 9px 12px; border: 1px solid #ddd; border-radius: 3px; font-size: 14px; font-family: 'Barlow', sans-serif; background: #fff; transition: border 0.15s; }
     textarea { resize: vertical; min-height: 90px; }
     input:focus, textarea:focus { outline: none; border-color: var(--azul); }
     .btn-guardar { background: var(--azul); color: #fff; border: none; border-radius: 3px; padding: 11px 24px; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; font-family: 'Barlow', sans-serif; transition: background 0.15s; }
     .btn-guardar:hover { background: var(--azul-medio); }
+    .btn-foto { background: var(--amarillo); color: var(--azul); border: none; border-radius: 3px; padding: 10px 20px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; font-family: 'Barlow', sans-serif; transition: opacity 0.15s; margin-bottom: 1rem; }
+    .btn-foto:hover { opacity: 0.85; }
+    .fotos-grid { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 0.5rem; }
+    .foto-item { position: relative; width: 120px; height: 90px; }
+    .foto-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 3px; border: 1px solid var(--gris-calido); }
+    .foto-borrar { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.6); color: #fff; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .limite-fotos { font-size: 11px; color: #888; margin-bottom: 0.75rem; }
     .mensaje { padding: 11px; border-radius: 3px; font-size: 13px; margin-top: 1rem; display: none; }
     .mensaje.ok { background: #DCF0E4; color: #1A4A2A; display: block; }
     .mensaje.error { background: #F5DCDC; color: #4A1A1A; display: block; }
@@ -85,6 +92,14 @@
       <button class="btn-guardar" onclick="guardar()">Guardar cambios</button>
       <div id="msg-guardar" class="mensaje"></div>
     </div>
+
+    <div class="card">
+      <h2>Fotos de trabajos</h2>
+      <p class="limite-fotos" id="limite-texto">Podés subir hasta 3 fotos.</p>
+      <button class="btn-foto" onclick="subirFoto()">+ Agregar foto</button>
+      <div class="fotos-grid" id="fotos-grid"></div>
+      <div id="msg-fotos" class="mensaje"></div>
+    </div>
   </div>
 
   <div id="no-vinculado" style="display:none;" class="no-vinculado">
@@ -98,21 +113,22 @@
   const SUPABASE_URL = 'https://buivjaoxfgvhrsmblxnx.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_Pv9JKNdeX2hDzZV3YqWfjA_NXYOcy5v';
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const CLOUDINARY_CLOUD = 'dsxydndhk';
+  const CLOUDINARY_PRESET = 'oficiolocal_upload';
+  const MAX_FOTOS = 3;
 
   let especialistaId = null;
+  let fotos = [];
 
   async function init() {
     const { data: { user } } = await sb.auth.getUser();
     if (!user) { window.location.href = 'acceso.html'; return; }
     document.getElementById('titulo-email').textContent = user.email;
 
-    const { data, error } = await sb.from('especialistas').select('*').eq('email_auth', user.email).single();
+    const { data } = await sb.from('especialistas').select('*').eq('email_auth', user.email).single();
     document.getElementById('cargando').style.display = 'none';
 
-    if (!data) {
-      document.getElementById('no-vinculado').style.display = 'block';
-      return;
-    }
+    if (!data) { document.getElementById('no-vinculado').style.display = 'block'; return; }
 
     especialistaId = data.id;
     document.getElementById('contenido').style.display = 'block';
@@ -126,6 +142,66 @@
     document.getElementById('f-localidad').value = data.localidad || '';
     document.getElementById('f-horario').value = data.horario || '';
     document.getElementById('f-instagram').value = data.instagram || '';
+
+    await cargarFotos();
+  }
+
+  async function cargarFotos() {
+    const { data } = await sb.from('fotos').select('*').eq('especialista_id', especialistaId).order('orden');
+    fotos = data || [];
+    renderFotos();
+  }
+
+  function renderFotos() {
+    const grid = document.getElementById('fotos-grid');
+    const limite = document.getElementById('limite-texto');
+    limite.textContent = `Tenés ${fotos.length} de ${MAX_FOTOS} fotos cargadas.`;
+    grid.innerHTML = fotos.map((f, i) =>
+      `<div class="foto-item">
+        <img src="${f.url}" alt="foto ${i+1}"/>
+        <button class="foto-borrar" onclick="borrarFoto(${f.id})">✕</button>
+      </div>`
+    ).join('');
+  }
+
+  async function subirFoto() {
+    if (fotos.length >= MAX_FOTOS) {
+      const msg = document.getElementById('msg-fotos');
+      msg.className = 'mensaje error';
+      msg.textContent = `Ya alcanzaste el límite de ${MAX_FOTOS} fotos.`;
+      return;
+    }
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const msg = document.getElementById('msg-fotos');
+      msg.className = 'mensaje ok';
+      msg.textContent = 'Subiendo foto...';
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', CLOUDINARY_PRESET);
+      formData.append('folder', 'oficiolocal');
+      const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`, { method: 'POST', body: formData });
+      const data = await res.json();
+      if (data.secure_url) {
+        await sb.from('fotos').insert({ especialista_id: especialistaId, url: data.secure_url, orden: fotos.length + 1 });
+        await cargarFotos();
+        msg.className = 'mensaje ok';
+        msg.textContent = '¡Foto subida correctamente!';
+      } else {
+        msg.className = 'mensaje error';
+        msg.textContent = 'Error al subir la foto. Intentá de nuevo.';
+      }
+    };
+    input.click();
+  }
+
+  async function borrarFoto(id) {
+    await sb.from('fotos').delete().eq('id', id);
+    await cargarFotos();
   }
 
   async function guardar() {
