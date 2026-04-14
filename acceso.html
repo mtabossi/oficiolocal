@@ -30,6 +30,9 @@
     .panel { display: none; }
     .panel.active { display: block; }
     .volver { display: inline-block; margin-top: 1.5rem; font-size: 13px; color: var(--azul); text-decoration: none; }
+    .ayuda { text-align: center; margin-top: 2rem; font-size: 12px; color: #999; }
+    .ayuda a { color: #999; text-decoration: none; }
+    .ayuda a:hover { color: var(--azul); }
   </style>
 </head>
 <body>
@@ -72,6 +75,10 @@
   </div>
 
   <a href="index.html" class="volver">← Volver al directorio</a>
+
+  <div class="ayuda">
+    ¿Tenés alguna consulta? <a href="https://wa.me/5492324477461?text=Hola%20Marcos%2C%20tengo%20una%20consulta%20sobre%20Oficio%20Local." target="_blank">Escribile a Marcos</a>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
