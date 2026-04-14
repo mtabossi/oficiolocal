@@ -154,12 +154,21 @@
     return 1;
   }
 
+  async function buscarPerfil(email, intentos) {
+    const { data } = await sb.from('especialistas').select('*').eq('email_auth', email).single();
+    if (!data && intentos > 0) {
+      await new Promise(r => setTimeout(r, 2000));
+      return buscarPerfil(email, intentos - 1);
+    }
+    return data;
+  }
+
   async function init() {
     const { data: { user } } = await sb.auth.getUser();
     if (!user) { window.location.href = 'acceso.html'; return; }
     document.getElementById('titulo-email').textContent = user.email;
 
-    const { data } = await sb.from('especialistas').select('*').eq('email_auth', user.email).single();
+    const data = await buscarPerfil(user.email, 3);
     document.getElementById('cargando').style.display = 'none';
 
     if (!data) { document.getElementById('no-vinculado').style.display = 'block'; return; }
