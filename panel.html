@@ -136,6 +136,7 @@
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   const CLOUDINARY_CLOUD = 'dsxydndhk';
   const CLOUDINARY_PRESET = 'oficiolocal_upload';
+  const esNuevo = new URLSearchParams(window.location.search).get('nuevo') === 'true';
 
   const RUBROS_LABEL = {
     electricidad: 'Electricidad', plomeria: 'Plomería', gas: 'Gas',
@@ -163,8 +164,8 @@
 
     if (!data) { document.getElementById('no-vinculado').style.display = 'block'; return; }
 
-    const esNuevo = !data.nombre || data.nombre === null || data.nombre.trim() === '';
-    if (esNuevo) {
+    const sinNombre = !data.nombre || data.nombre.trim() === '';
+    if (sinNombre && !esNuevo) {
       window.location.href = 'planes.html';
       return;
     }
@@ -173,7 +174,7 @@
     maxFotos = obtenerMaxFotos(data.plan, data.fundador);
     document.getElementById('contenido').style.display = 'block';
 
-    document.getElementById('titulo-nombre').childNodes[0].textContent = data.nombre + ' ';
+    document.getElementById('titulo-nombre').childNodes[0].textContent = (data.nombre || 'Mi perfil') + ' ';
 
     if (data.fundador) document.getElementById('badge-fundador').style.display = 'inline-block';
 
