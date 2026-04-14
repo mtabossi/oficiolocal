@@ -127,7 +127,7 @@
     msg.className = 'mensaje';
     if (!email) { msg.className = 'mensaje error'; msg.textContent = 'Escribí tu email arriba y después tocá este botón.'; return; }
     const { error } = await sb.auth.resetPasswordForEmail(email, {
-      redirectTo: 'https://mtabossi.github.io/oficiolocal/panel.html'
+      redirectTo: 'https://mtabossi.github.io/oficiolocal/resetear.html'
     });
     if (error) { msg.className = 'mensaje error'; msg.textContent = 'Hubo un error. Verificá el email e intentá de nuevo.'; }
     else { msg.className = 'mensaje ok'; msg.textContent = '¡Listo! Te mandamos un email para recuperar tu contraseña.'; }
