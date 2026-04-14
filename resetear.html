@@ -24,6 +24,9 @@
     .mensaje { padding: 12px; border-radius: 3px; font-size: 13px; margin-top: 1rem; display: none; }
     .mensaje.ok { background: #DCF0E4; color: #1A4A2A; display: block; }
     .mensaje.error { background: #F5DCDC; color: #4A1A1A; display: block; }
+    .ayuda { text-align: center; margin-top: 2rem; font-size: 12px; color: #999; }
+    .ayuda a { color: #999; text-decoration: none; }
+    .ayuda a:hover { color: var(--azul); }
   </style>
 </head>
 <body>
@@ -44,6 +47,10 @@
   </div>
   <button class="btn" onclick="resetear()">Guardar nueva contraseña</button>
   <div id="msg" class="mensaje"></div>
+
+  <div class="ayuda">
+    ¿Tenés alguna consulta? <a href="https://wa.me/5492324477461?text=Hola%20Marcos%2C%20tengo%20una%20consulta%20sobre%20Oficio%20Local." target="_blank">Escribile a Marcos</a>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
