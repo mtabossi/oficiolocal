@@ -23,6 +23,7 @@
     .badge-presencia { background: #E8E4DB; color: #6B6560; }
     .badge-visible { background: #DCF0E4; color: #1A4A2A; }
     .badge-destacado { background: var(--azul); color: var(--amarillo); }
+    .btn-mejorar { display: inline-block; margin-top: 8px; font-size: 11px; color: var(--azul); text-decoration: underline; cursor: pointer; background: none; border: none; font-family: 'Barlow', sans-serif; padding: 0; }
     .card { background: #fff; border-radius: 4px; border: 1px solid var(--gris-calido); border-left: 4px solid var(--amarillo); padding: 1.5rem; margin-bottom: 1.25rem; }
     .card h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; color: var(--azul); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 1rem; }
     .form-group { margin-bottom: 1rem; }
@@ -69,6 +70,7 @@
         <span class="badge-plan" id="badge-plan"></span>
       </h1>
       <p id="titulo-email"></p>
+      <a class="btn-mejorar" id="btn-mejorar" href="planes.html" style="display:none;">↑ Mejorar mi plan</a>
     </div>
 
     <div class="card">
@@ -243,9 +245,18 @@
     if (data.fundador) document.getElementById('badge-fundador').style.display = 'inline-block';
 
     const badgePlan = document.getElementById('badge-plan');
-    if (data.plan === 'destacado') { badgePlan.textContent = 'Destacado'; badgePlan.className = 'badge-plan badge-destacado'; }
-    else if (data.plan === 'visible') { badgePlan.textContent = 'Visible'; badgePlan.className = 'badge-plan badge-visible'; }
-    else { badgePlan.textContent = 'Presencia'; badgePlan.className = 'badge-plan badge-presencia'; }
+    if (data.plan === 'destacado') {
+      badgePlan.textContent = 'Destacado';
+      badgePlan.className = 'badge-plan badge-destacado';
+    } else if (data.plan === 'visible') {
+      badgePlan.textContent = 'Visible';
+      badgePlan.className = 'badge-plan badge-visible';
+      document.getElementById('btn-mejorar').style.display = 'inline-block';
+    } else {
+      badgePlan.textContent = 'Presencia';
+      badgePlan.className = 'badge-plan badge-presencia';
+      document.getElementById('btn-mejorar').style.display = 'inline-block';
+    }
 
     document.getElementById('f-nombre').value = data.nombre || '';
     document.getElementById('f-rubro-id').value = data.rubro_id || '';
