@@ -93,7 +93,7 @@
         <textarea id="f-descripcion" placeholder="Contá qué hacés y en qué te especializás."></textarea>
       </div>
       <div class="form-group">
-        <label>Teléfono (con código de área, sin 0 ni 15)</label>
+        <label>Teléfono (solo números, sin 0 ni 15)</label>
         <input type="text" id="f-telefono" placeholder="Ej: 2324123456"/>
       </div>
       <div class="form-group">
@@ -152,6 +152,15 @@
     if (plan === 'destacado') return 8;
     if (plan === 'visible' || fundador) return 3;
     return 1;
+  }
+
+  function formatearTelefono(tel) {
+    let numero = tel.replace(/\D/g, '');
+    if (numero.startsWith('549')) return numero;
+    if (numero.startsWith('54')) return '549' + numero.slice(2);
+    if (numero.startsWith('0')) numero = numero.slice(1);
+    if (numero.startsWith('15')) numero = numero.slice(2);
+    return '549' + numero;
   }
 
   async function buscarPerfil(email, intentos) {
@@ -284,12 +293,14 @@
       msg.textContent = 'Completá al menos nombre, rubro y descripción.';
       return;
     }
+    const telefonoRaw = document.getElementById('f-telefono').value.trim();
+    const telefono = telefonoRaw ? formatearTelefono(telefonoRaw) : '';
     const { error } = await sb.from('especialistas').update({
       nombre,
       rubro_id: rubroId,
       rubro: RUBROS_LABEL[rubroId],
       descripcion,
-      telefono: document.getElementById('f-telefono').value.trim(),
+      telefono,
       localidad: document.getElementById('f-localidad').value.trim(),
       horario: document.getElementById('f-horario').value.trim(),
       instagram: document.getElementById('f-instagram').value.trim()
