@@ -103,7 +103,11 @@
     if (pass.length < 6) { msg.className = 'mensaje error'; msg.textContent = 'La contraseña debe tener al menos 6 caracteres.'; return; }
     const { error } = await sb.auth.signUp({ email, password: pass });
     if (error) { msg.className = 'mensaje error'; msg.textContent = 'Hubo un error. Intentá de nuevo.'; }
-    else { msg.className = 'mensaje ok'; msg.textContent = '¡Cuenta creada! Ya podés ingresar.'; }
+    else {
+      msg.className = 'mensaje ok';
+      msg.textContent = '¡Cuenta creada! Redirigiendo...';
+      setTimeout(() => window.location.href = 'panel.html?nuevo=true', 1500);
+    }
   }
 </script>
 </body>
