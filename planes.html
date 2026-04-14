@@ -36,6 +36,9 @@
     .btn-pago:hover { background: var(--azul-medio); }
     .btn-destacado { background: var(--amarillo); color: var(--azul); }
     .btn-destacado:hover { opacity: 0.9; }
+    .btn-ya-pague { display: block; width: 100%; padding: 10px; border-radius: 3px; font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; font-family: 'Barlow', sans-serif; text-align: center; text-decoration: none; transition: all 0.15s; border: 2px solid var(--azul); color: var(--azul); background: transparent; margin-top: 8px; }
+    .btn-ya-pague:hover { background: var(--azul); color: #fff; }
+    .instruccion-pago { font-size: 11px; color: #888; text-align: center; margin-top: 8px; font-family: 'Lora', serif; font-style: italic; }
     .nota { font-size: 12px; color: #888; text-align: center; margin-top: 2rem; font-family: 'Lora', serif; font-style: italic; }
     .volver { display: block; text-align: center; margin-top: 1.5rem; font-size: 13px; color: var(--azul); text-decoration: none; }
   </style>
@@ -85,6 +88,8 @@
         <li><span class="check">✓</span> Aparece antes que los perfiles gratuitos</li>
       </ul>
       <a href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=c4bb351ca2b7436abab3674caf1b93e4" class="btn-plan btn-pago" target="_blank">Suscribirme — $3.000/mes</a>
+      <p class="instruccion-pago">Después de pagar, volvé aquí y hacé clic abajo 👇</p>
+      <a href="acceso.html" class="btn-ya-pague">✅ Ya pagué, quiero registrarme</a>
     </div>
 
     <div class="plan destacado">
@@ -104,6 +109,8 @@
         <li><span class="check">✓</span> Primero en el listado de su categoría</li>
       </ul>
       <a href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=cb7908583cf8401cbcd90f963c55999b" class="btn-plan btn-destacado" target="_blank">Suscribirme — $6.000/mes</a>
+      <p class="instruccion-pago">Después de pagar, volvé aquí y hacé clic abajo 👇</p>
+      <a href="acceso.html" class="btn-ya-pague">✅ Ya pagué, quiero registrarme</a>
     </div>
 
   </div>
