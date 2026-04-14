@@ -13,6 +13,7 @@
     .logo-nombre { font-family: 'Barlow Condensed', sans-serif; font-size: 26px; font-weight: 700; color: #fff; letter-spacing: 0.04em; text-transform: uppercase; }
     .logo-ciudad { font-size: 11px; color: var(--amarillo); letter-spacing: 0.18em; text-transform: uppercase; font-weight: 500; margin-top: 4px; }
     .container { max-width: 420px; margin: 3rem auto; padding: 0 1.5rem; width: 100%; }
+    .plan-elegido { background: #DCF0E4; border: 1px solid #25D366; border-radius: 3px; padding: 10px 14px; font-size: 13px; color: #1A4A2A; font-weight: 600; margin-bottom: 1.5rem; text-align: center; display: none; }
     .tabs { display: flex; border-bottom: 2px solid var(--azul); margin-bottom: 2rem; }
     .tab { flex: 1; padding: 0.75rem; text-align: center; font-weight: 600; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; color: #888; border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.15s; }
     .tab.active { color: var(--azul); border-bottom-color: var(--amarillo); }
@@ -36,6 +37,7 @@
   <div class="logo-ciudad">Mercedes · Buenos Aires</div>
 </header>
 <div class="container">
+  <div class="plan-elegido" id="aviso-plan"></div>
   <div class="tabs">
     <div class="tab active" onclick="mostrarPanel('login')">Ingresar</div>
     <div class="tab" onclick="mostrarPanel('registro')">Registrarse</div>
@@ -76,6 +78,31 @@
   const SUPABASE_KEY = 'sb_publishable_Pv9JKNdeX2hDzZV3YqWfjA_NXYOcy5v';
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+  const params = new URLSearchParams(window.location.search);
+  const planElegido = params.get('plan') || 'presencia';
+
+  const PLANES_LABEL = {
+    presencia: 'Plan Presencia — Gratis',
+    visible: 'Plan Visible — $3.000/mes',
+    destacado: 'Plan Destacado — $6.000/mes'
+  };
+
+  // Mostrar aviso del plan elegido
+  if (planElegido && planElegido !== 'presencia') {
+    const aviso = document.getElementById('aviso-plan');
+    aviso.style.display = 'block';
+    aviso.textContent = '✅ Plan seleccionado: ' + PLANES_LABEL[planElegido];
+    // Mostrar tab de registro por defecto
+    mostrarTabRegistro();
+  }
+
+  function mostrarTabRegistro() {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('panel-registro').classList.add('active');
+    document.querySelectorAll('.tab')[1].classList.add('active');
+  }
+
   function mostrarPanel(panel) {
     document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -101,13 +128,16 @@
     msg.className = 'mensaje';
     if (!email || !pass) { msg.className = 'mensaje error'; msg.textContent = 'Completá todos los campos.'; return; }
     if (pass.length < 6) { msg.className = 'mensaje error'; msg.textContent = 'La contraseña debe tener al menos 6 caracteres.'; return; }
-    const { error } = await sb.auth.signUp({ email, password: pass });
-    if (error) { msg.className = 'mensaje error'; msg.textContent = 'Hubo un error. Intentá de nuevo.'; }
-    else {
-      msg.className = 'mensaje ok';
-      msg.textContent = '¡Cuenta creada! Redirigiendo...';
-      setTimeout(() => window.location.href = 'panel.html?nuevo=true', 1500);
-    }
+    const { data, error } = await sb.auth.signUp({ email, password: pass });
+    if (error) { msg.className = 'mensaje error'; msg.textContent = 'Hubo un error. Intentá de nuevo.'; return; }
+
+    // Esperar que el trigger cree el perfil y luego actualizar el plan
+    await new Promise(r => setTimeout(r, 2000));
+    await sb.from('especialistas').update({ plan: planElegido }).eq('email_auth', email);
+
+    msg.className = 'mensaje ok';
+    msg.textContent = '¡Cuenta creada! Redirigiendo...';
+    setTimeout(() => window.location.href = 'panel.html?nuevo=true', 1500);
   }
 </script>
 </body>
