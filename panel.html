@@ -163,8 +163,8 @@
 
     if (!data) { document.getElementById('no-vinculado').style.display = 'block'; return; }
 
-    // Si es nuevo (sin nombre), lo mandamos a elegir el plan
-    if (!data.nombre) {
+    const esNuevo = !data.nombre || data.nombre === null || data.nombre.trim() === '';
+    if (esNuevo) {
       window.location.href = 'planes.html';
       return;
     }
