@@ -23,6 +23,7 @@
     input:focus { outline: none; border-color: var(--azul); }
     .btn { width: 100%; padding: 12px; background: var(--azul); color: #fff; border: none; border-radius: 3px; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; font-family: 'Barlow', sans-serif; transition: background 0.15s; margin-top: 0.5rem; }
     .btn:hover { background: var(--azul-medio); }
+    .btn-olvide { width: 100%; padding: 10px; background: transparent; color: var(--azul); border: none; font-size: 12px; cursor: pointer; font-family: 'Barlow', sans-serif; margin-top: 0.75rem; text-decoration: underline; }
     .mensaje { padding: 12px; border-radius: 3px; font-size: 13px; margin-top: 1rem; display: none; }
     .mensaje.ok { background: #DCF0E4; color: #1A4A2A; display: block; }
     .mensaje.error { background: #F5DCDC; color: #4A1A1A; display: block; }
@@ -53,6 +54,7 @@
       <input type="password" id="login-pass" placeholder="••••••••"/>
     </div>
     <button class="btn" onclick="login()">Ingresar</button>
+    <button class="btn-olvide" onclick="olvideClave()">Olvidé mi contraseña</button>
     <div id="login-msg" class="mensaje"></div>
   </div>
 
@@ -87,12 +89,10 @@
     destacado: 'Plan Destacado — $6.000/mes'
   };
 
-  // Mostrar aviso del plan elegido
   if (planElegido && planElegido !== 'presencia') {
     const aviso = document.getElementById('aviso-plan');
     aviso.style.display = 'block';
     aviso.textContent = '✅ Plan seleccionado: ' + PLANES_LABEL[planElegido];
-    // Mostrar tab de registro por defecto
     mostrarTabRegistro();
   }
 
@@ -121,6 +121,18 @@
     else { msg.className = 'mensaje ok'; msg.textContent = '¡Bienvenido! Redirigiendo...'; setTimeout(() => window.location.href = 'panel.html', 1500); }
   }
 
+  async function olvideClave() {
+    const email = document.getElementById('login-email').value;
+    const msg = document.getElementById('login-msg');
+    msg.className = 'mensaje';
+    if (!email) { msg.className = 'mensaje error'; msg.textContent = 'Escribí tu email arriba y después tocá este botón.'; return; }
+    const { error } = await sb.auth.resetPasswordForEmail(email, {
+      redirectTo: 'https://mtabossi.github.io/oficiolocal/panel.html'
+    });
+    if (error) { msg.className = 'mensaje error'; msg.textContent = 'Hubo un error. Verificá el email e intentá de nuevo.'; }
+    else { msg.className = 'mensaje ok'; msg.textContent = '¡Listo! Te mandamos un email para recuperar tu contraseña.'; }
+  }
+
   async function registro() {
     const email = document.getElementById('reg-email').value;
     const pass = document.getElementById('reg-pass').value;
@@ -131,7 +143,6 @@
     const { data, error } = await sb.auth.signUp({ email, password: pass });
     if (error) { msg.className = 'mensaje error'; msg.textContent = 'Hubo un error. Intentá de nuevo.'; return; }
 
-    // Esperar que el trigger cree el perfil y luego actualizar el plan
     await new Promise(r => setTimeout(r, 2000));
     await sb.from('especialistas').update({ plan: planElegido }).eq('email_auth', email);
 
