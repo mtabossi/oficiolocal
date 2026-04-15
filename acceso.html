@@ -125,7 +125,7 @@
     if (!email || !pass) { msg.className = 'mensaje error'; msg.textContent = 'Completá todos los campos.'; return; }
     const { error } = await sb.auth.signInWithPassword({ email, password: pass });
     if (error) { msg.className = 'mensaje error'; msg.textContent = 'Email o contraseña incorrectos.'; }
-    else { msg.className = 'mensaje ok'; msg.textContent = '¡Bienvenido! Redirigiendo...'; setTimeout(() => window.location.href = 'panel.html', 1500); }
+    else { msg.className = 'mensaje ok'; msg.textContent = '¡Bienvenido! Redirigiendo...'; setTimeout(() => window.location.href = 'https://oficiolocal.com.ar/panel.html', 1500); }
   }
 
   async function olvideClave() {
@@ -134,7 +134,7 @@
     msg.className = 'mensaje';
     if (!email) { msg.className = 'mensaje error'; msg.textContent = 'Escribí tu email arriba y después tocá este botón.'; return; }
     const { error } = await sb.auth.resetPasswordForEmail(email, {
-      redirectTo: 'https://mtabossi.github.io/oficiolocal/resetear.html'
+      redirectTo: 'https://oficiolocal.com.ar/resetear.html'
     });
     if (error) { msg.className = 'mensaje error'; msg.textContent = 'Hubo un error. Verificá el email e intentá de nuevo.'; }
     else { msg.className = 'mensaje ok'; msg.textContent = '¡Listo! Te mandamos un email para recuperar tu contraseña.'; }
@@ -155,7 +155,7 @@
 
     msg.className = 'mensaje ok';
     msg.textContent = '¡Cuenta creada! Redirigiendo...';
-    setTimeout(() => window.location.href = 'panel.html?nuevo=true', 1500);
+    setTimeout(() => window.location.href = 'https://oficiolocal.com.ar/panel.html?nuevo=true', 1500);
   }
 </script>
 </body>
