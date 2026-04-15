@@ -56,9 +56,7 @@
 
     <div class="plan">
       <div class="plan-header">
-        <div>
-          <div class="plan-nombre">Plan Presencia <span class="badge badge-gratis">Gratis</span></div>
-        </div>
+        <div><div class="plan-nombre">Plan Presencia <span class="badge badge-gratis">Gratis</span></div></div>
         <div class="plan-precio">$0 <span>/mes</span></div>
       </div>
       <ul class="features">
@@ -68,14 +66,12 @@
         <li><span class="check">✓</span> 1 rubro</li>
         <li><span class="check">✓</span> Aparece en el listado general</li>
       </ul>
-      <a href="acceso.html?plan=presencia" class="btn-plan btn-gratis">Registrarme gratis</a>
+      <a href="acceso.html?plan=presencia" class="btn-plan btn-gratis" id="btn-presencia">Registrarme gratis</a>
     </div>
 
     <div class="plan destacado">
       <div class="plan-header">
-        <div>
-          <div class="plan-nombre">Plan Visible <span class="badge badge-popular">Más elegido</span></div>
-        </div>
+        <div><div class="plan-nombre">Plan Visible <span class="badge badge-popular">Más elegido</span></div></div>
         <div class="plan-precio">$3.000 <span>/mes</span></div>
       </div>
       <ul class="features">
@@ -89,14 +85,12 @@
       </ul>
       <a href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=c4bb351ca2b7436abab3674caf1b93e4" class="btn-plan btn-pago" target="_blank">Suscribirme — $3.000/mes</a>
       <p class="instruccion-pago">Después de pagar, volvé aquí y hacé clic abajo 👇</p>
-      <a href="acceso.html?plan=visible" class="btn-ya-pague">✅ Ya pagué, quiero registrarme</a>
+      <a href="#" class="btn-ya-pague" onclick="yaPague('visible'); return false;">✅ Ya pagué, quiero registrarme</a>
     </div>
 
     <div class="plan destacado">
       <div class="plan-header">
-        <div>
-          <div class="plan-nombre">Plan Destacado ⭐</div>
-        </div>
+        <div><div class="plan-nombre">Plan Destacado ⭐</div></div>
         <div class="plan-precio">$6.000 <span>/mes</span></div>
       </div>
       <ul class="features">
@@ -110,7 +104,7 @@
       </ul>
       <a href="https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=cb7908583cf8401cbcd90f963c55999b" class="btn-plan btn-destacado" target="_blank">Suscribirme — $6.000/mes</a>
       <p class="instruccion-pago">Después de pagar, volvé aquí y hacé clic abajo 👇</p>
-      <a href="acceso.html?plan=destacado" class="btn-ya-pague">✅ Ya pagué, quiero registrarme</a>
+      <a href="#" class="btn-ya-pague" onclick="yaPague('destacado'); return false;">✅ Ya pagué, quiero registrarme</a>
     </div>
 
   </div>
@@ -118,5 +112,36 @@
   <p class="nota">Una vez confirmado tu pago, tu plan será actualizado en un plazo de 24 horas hábiles.<br>¿Dudas? Contactá a Marcos al WhatsApp 2324477461.</p>
   <a href="index.html" class="volver">← Volver al directorio</a>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = 'https://buivjaoxfgvhrsmblxnx.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_Pv9JKNdeX2hDzZV3YqWfjA_NXYOcy5v';
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  async function init() {
+    const { data: { user } } = await sb.auth.getUser();
+    if (user) {
+      // Si ya está logueado, cambiar el botón de presencia para ir al panel
+      const btnPresencia = document.getElementById('btn-presencia');
+      btnPresencia.textContent = 'Continuar con Plan Presencia';
+      btnPresencia.href = 'panel.html';
+    }
+  }
+
+  async function yaPague(plan) {
+    const { data: { user } } = await sb.auth.getUser();
+    if (user) {
+      // Ya está logueado — actualizar plan y mandar al panel
+      await sb.from('especialistas').update({ plan }).eq('email_auth', user.email);
+      window.location.href = 'panel.html';
+    } else {
+      // No está logueado — mandar a registrarse con el plan elegido
+      window.location.href = 'acceso.html?plan=' + plan;
+    }
+  }
+
+  init();
+</script>
 </body>
 </html>
