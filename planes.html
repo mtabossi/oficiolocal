@@ -66,7 +66,7 @@
         <li><span class="check">✓</span> 1 rubro</li>
         <li><span class="check">✓</span> Aparece en el listado general</li>
       </ul>
-      <a href="acceso.html?plan=presencia" class="btn-plan btn-gratis" id="btn-presencia">Registrarme gratis</a>
+      <a href="#" class="btn-plan btn-gratis" id="btn-presencia" onclick="elegirPresencia(); return false;">Registrarme gratis</a>
     </div>
 
     <div class="plan destacado">
@@ -110,7 +110,7 @@
   </div>
 
   <p class="nota">Una vez confirmado tu pago, tu plan será actualizado en un plazo de 24 horas hábiles.<br>¿Dudas? Contactá a Marcos al WhatsApp 2324477461.</p>
-  <a href="index.html" class="volver">← Volver al directorio</a>
+  <a href="https://oficiolocal.com.ar/index.html" class="volver">← Volver al directorio</a>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -119,29 +119,24 @@
   const SUPABASE_KEY = 'sb_publishable_Pv9JKNdeX2hDzZV3YqWfjA_NXYOcy5v';
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  async function init() {
+  async function elegirPresencia() {
     const { data: { user } } = await sb.auth.getUser();
     if (user) {
-      // Si ya está logueado, cambiar el botón de presencia para ir al panel
-      const btnPresencia = document.getElementById('btn-presencia');
-      btnPresencia.textContent = 'Continuar con Plan Presencia';
-      btnPresencia.href = 'panel.html';
+      window.location.href = 'https://oficiolocal.com.ar/panel.html?nuevo=true';
+    } else {
+      window.location.href = 'https://oficiolocal.com.ar/acceso.html?plan=presencia';
     }
   }
 
   async function yaPague(plan) {
     const { data: { user } } = await sb.auth.getUser();
     if (user) {
-      // Ya está logueado — actualizar plan y mandar al panel
       await sb.from('especialistas').update({ plan }).eq('email_auth', user.email);
-      window.location.href = 'panel.html';
+      window.location.href = 'https://oficiolocal.com.ar/panel.html';
     } else {
-      // No está logueado — mandar a registrarse con el plan elegido
-      window.location.href = 'acceso.html?plan=' + plan;
+      window.location.href = 'https://oficiolocal.com.ar/acceso.html?plan=' + plan;
     }
   }
-
-  init();
 </script>
 </body>
 </html>
