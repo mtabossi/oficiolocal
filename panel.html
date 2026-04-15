@@ -24,6 +24,7 @@
     .badge-visible { background: #DCF0E4; color: #1A4A2A; }
     .badge-destacado { background: var(--azul); color: var(--amarillo); }
     .btn-mejorar { display: inline-block; margin-top: 8px; font-size: 11px; color: var(--azul); text-decoration: underline; cursor: pointer; background: none; border: none; font-family: 'Barlow', sans-serif; padding: 0; }
+    .aviso-nuevo { background: #DCF0E4; border: 1px solid #25D366; border-radius: 3px; padding: 12px 14px; margin-bottom: 1.5rem; font-size: 13px; color: #1A4A2A; }
     .card { background: #fff; border-radius: 4px; border: 1px solid var(--gris-calido); border-left: 4px solid var(--amarillo); padding: 1.5rem; margin-bottom: 1.25rem; }
     .card h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; color: var(--azul); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 1rem; }
     .form-group { margin-bottom: 1rem; }
@@ -64,13 +65,16 @@
 <div class="container">
   <div id="cargando" style="text-align:center;padding:3rem;color:#666;">Cargando...</div>
   <div id="contenido" style="display:none;">
+    <div id="aviso-nuevo" class="aviso-nuevo" style="display:none;">
+      👋 ¡Bienvenido a Oficio Local! Completá tu perfil para aparecer en el directorio.
+    </div>
     <div class="bienvenida">
       <h1 id="titulo-nombre">Mi perfil
         <span class="badge-fundador" id="badge-fundador" style="display:none;">Fundador</span>
         <span class="badge-plan" id="badge-plan"></span>
       </h1>
       <p id="titulo-email"></p>
-      <a class="btn-mejorar" id="btn-mejorar" href="planes.html" style="display:none;">↑ Mejorar mi plan</a>
+      <button class="btn-mejorar" id="btn-mejorar" onclick="window.location.href='https://oficiolocal.com.ar/planes.html'" style="display:none;">↑ Mejorar mi plan</button>
     </div>
 
     <div class="card">
@@ -173,7 +177,6 @@
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   const CLOUDINARY_CLOUD = 'dsxydndhk';
   const CLOUDINARY_PRESET = 'oficiolocal_upload';
-  const esNuevo = new URLSearchParams(window.location.search).get('nuevo') === 'true';
 
   const RUBROS_LABEL = {
     electricidad: 'Electricidad', plomeria: 'Plomería', gas: 'Gas',
@@ -220,7 +223,7 @@
 
   async function init() {
     const { data: { user } } = await sb.auth.getUser();
-    if (!user) { window.location.href = 'acceso.html'; return; }
+    if (!user) { window.location.href = 'https://oficiolocal.com.ar/acceso.html'; return; }
     document.getElementById('titulo-email').textContent = user.email;
 
     const data = await buscarPerfil(user.email, 3);
@@ -228,15 +231,14 @@
 
     if (!data) { document.getElementById('no-vinculado').style.display = 'block'; return; }
 
-    const sinNombre = !data.nombre || data.nombre.trim() === '';
-    if (sinNombre && !esNuevo) {
-      window.location.href = 'planes.html';
-      return;
-    }
-
     especialistaId = data.id;
     maxFotos = obtenerMaxFotos(data.plan, data.fundador);
     document.getElementById('contenido').style.display = 'block';
+
+    const sinNombre = !data.nombre || data.nombre.trim() === '';
+    if (sinNombre) {
+      document.getElementById('aviso-nuevo').style.display = 'block';
+    }
 
     mostrarRubrosExtra(data.plan, data.fundador);
 
@@ -375,12 +377,13 @@
       msg.className = 'mensaje ok';
       msg.textContent = '¡Cambios guardados correctamente!';
       document.getElementById('titulo-nombre').childNodes[0].textContent = nombre + ' ';
+      document.getElementById('aviso-nuevo').style.display = 'none';
     }
   }
 
   async function salir() {
     await sb.auth.signOut();
-    window.location.href = 'acceso.html';
+    window.location.href = 'https://oficiolocal.com.ar/acceso.html';
   }
 
   init();
