@@ -23,7 +23,9 @@
     .badge-presencia { background: #E8E4DB; color: #6B6560; }
     .badge-visible { background: #DCF0E4; color: #1A4A2A; }
     .badge-destacado { background: var(--azul); color: var(--amarillo); }
-    .btn-mejorar { display: inline-block; margin-top: 8px; font-size: 11px; color: var(--azul); text-decoration: underline; cursor: pointer; background: none; border: none; font-family: 'Barlow', sans-serif; padding: 0; }
+    .plan-acciones { margin-top: 6px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-mejorar { font-size: 11px; color: var(--azul); text-decoration: underline; cursor: pointer; background: none; border: none; font-family: 'Barlow', sans-serif; padding: 0; }
+    .btn-cambiar-plan { font-size: 11px; color: #888; text-decoration: underline; cursor: pointer; background: none; border: none; font-family: 'Barlow', sans-serif; padding: 0; }
     .aviso-nuevo { background: #DCF0E4; border: 1px solid #25D366; border-radius: 3px; padding: 12px 14px; margin-bottom: 1.5rem; font-size: 13px; color: #1A4A2A; }
     .card { background: #fff; border-radius: 4px; border: 1px solid var(--gris-calido); border-left: 4px solid var(--amarillo); padding: 1.5rem; margin-bottom: 1.25rem; }
     .card h2 { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; color: var(--azul); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 1rem; }
@@ -74,7 +76,10 @@
         <span class="badge-plan" id="badge-plan"></span>
       </h1>
       <p id="titulo-email"></p>
-      <button class="btn-mejorar" id="btn-mejorar" onclick="window.location.href='https://oficiolocal.com.ar/planes.html'" style="display:none;">↑ Mejorar mi plan</button>
+      <div class="plan-acciones">
+        <button class="btn-mejorar" id="btn-mejorar" onclick="window.location.href='https://oficiolocal.com.ar/planes.html'" style="display:none;">↑ Mejorar mi plan</button>
+        <a class="btn-cambiar-plan" id="btn-cambiar-plan" href="#" target="_blank" style="display:none;">¿Querés cambiar tu plan? Escribile a Marcos</a>
+      </div>
     </div>
 
     <div class="card">
@@ -187,6 +192,7 @@
   let especialistaId = null;
   let fotos = [];
   let maxFotos = 1;
+  let nombreProfesional = '';
 
   function obtenerMaxFotos(plan, fundador) {
     if (plan === 'destacado') return 8;
@@ -232,6 +238,7 @@
     if (!data) { document.getElementById('no-vinculado').style.display = 'block'; return; }
 
     especialistaId = data.id;
+    nombreProfesional = data.nombre || '';
     maxFotos = obtenerMaxFotos(data.plan, data.fundador);
     document.getElementById('contenido').style.display = 'block';
 
@@ -241,23 +248,29 @@
     }
 
     mostrarRubrosExtra(data.plan, data.fundador);
-
     document.getElementById('titulo-nombre').childNodes[0].textContent = (data.nombre || 'Mi perfil') + ' ';
 
     if (data.fundador) document.getElementById('badge-fundador').style.display = 'inline-block';
 
     const badgePlan = document.getElementById('badge-plan');
+    const btnMejorar = document.getElementById('btn-mejorar');
+    const btnCambiar = document.getElementById('btn-cambiar-plan');
+
     if (data.plan === 'destacado') {
       badgePlan.textContent = 'Destacado';
       badgePlan.className = 'badge-plan badge-destacado';
+      btnCambiar.style.display = 'inline';
+      btnCambiar.href = `https://wa.me/5492324477461?text=Hola%20Marcos%2C%20soy%20${encodeURIComponent(data.nombre || '')}%20y%20quiero%20cambiar%20mi%20plan%20Destacado.`;
     } else if (data.plan === 'visible') {
       badgePlan.textContent = 'Visible';
       badgePlan.className = 'badge-plan badge-visible';
-      document.getElementById('btn-mejorar').style.display = 'inline-block';
+      btnMejorar.style.display = 'inline';
+      btnCambiar.style.display = 'inline';
+      btnCambiar.href = `https://wa.me/5492324477461?text=Hola%20Marcos%2C%20soy%20${encodeURIComponent(data.nombre || '')}%20y%20quiero%20cambiar%20mi%20plan%20Visible.`;
     } else {
       badgePlan.textContent = 'Presencia';
       badgePlan.className = 'badge-plan badge-presencia';
-      document.getElementById('btn-mejorar').style.display = 'inline-block';
+      btnMejorar.style.display = 'inline';
     }
 
     document.getElementById('f-nombre').value = data.nombre || '';
@@ -359,15 +372,10 @@
     const rubroId2 = document.getElementById('f-rubro-id-2').value;
     const rubroId3 = document.getElementById('f-rubro-id-3').value;
     const { error } = await sb.from('especialistas').update({
-      nombre,
-      rubro_id: rubroId,
-      rubro: RUBROS_LABEL[rubroId],
-      rubro_id_2: rubroId2 || null,
-      rubro_2: rubroId2 ? RUBROS_LABEL[rubroId2] : null,
-      rubro_id_3: rubroId3 || null,
-      rubro_3: rubroId3 ? RUBROS_LABEL[rubroId3] : null,
-      descripcion,
-      telefono,
+      nombre, rubro_id: rubroId, rubro: RUBROS_LABEL[rubroId],
+      rubro_id_2: rubroId2 || null, rubro_2: rubroId2 ? RUBROS_LABEL[rubroId2] : null,
+      rubro_id_3: rubroId3 || null, rubro_3: rubroId3 ? RUBROS_LABEL[rubroId3] : null,
+      descripcion, telefono,
       localidad: document.getElementById('f-localidad').value.trim(),
       horario: document.getElementById('f-horario').value.trim(),
       instagram: document.getElementById('f-instagram').value.trim()
