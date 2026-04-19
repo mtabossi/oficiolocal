@@ -34,6 +34,7 @@
     input, textarea, select { width: 100%; padding: 9px 12px; border: 1px solid #ddd; border-radius: 3px; font-size: 14px; font-family: 'Barlow', sans-serif; background: #fff; transition: border 0.15s; }
     textarea { resize: vertical; min-height: 90px; }
     input:focus, textarea:focus, select:focus { outline: none; border-color: var(--azul); }
+    .contador-desc { font-size: 11px; text-align: right; margin-top: 4px; color: #888; }
     .btn-guardar { background: var(--azul); color: #fff; border: none; border-radius: 3px; padding: 11px 24px; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; font-family: 'Barlow', sans-serif; transition: background 0.15s; }
     .btn-guardar:hover { background: var(--azul-medio); }
     .btn-foto { background: var(--amarillo); color: var(--azul); border: none; border-radius: 3px; padding: 10px 20px; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; font-family: 'Barlow', sans-serif; transition: opacity 0.15s; margin-bottom: 1rem; }
@@ -133,6 +134,7 @@
       <div class="form-group">
         <label>Descripción de tu trabajo *</label>
         <textarea id="f-descripcion" placeholder="Contá qué hacés y en qué te especializás."></textarea>
+        <div class="contador-desc" id="contador-desc"></div>
       </div>
       <div class="form-group">
         <label>Teléfono (solo números, sin 0 ni 15)</label>
@@ -189,6 +191,13 @@
     pintura: 'Pintura', carpinteria: 'Carpintería'
   };
 
+  const LIMITES_DESC = {
+    presencia: 120,
+    visible: 350,
+    destacado: 700,
+    fundador: 350
+  };
+
   let especialistaId = null;
   let fotos = [];
   let maxFotos = 1;
@@ -198,6 +207,31 @@
     if (plan === 'destacado') return 8;
     if (plan === 'visible' || fundador) return 3;
     return 1;
+  }
+
+  function obtenerLimiteDesc(plan, fundador) {
+    if (fundador) return LIMITES_DESC.fundador;
+    return LIMITES_DESC[plan] || LIMITES_DESC.presencia;
+  }
+
+  function configurarDescripcion(plan, fundador) {
+    const limite = obtenerLimiteDesc(plan, fundador);
+    const textarea = document.getElementById('f-descripcion');
+    const contador = document.getElementById('contador-desc');
+
+    textarea.setAttribute('maxlength', limite);
+
+    function actualizarContador() {
+      if (textarea.value.length > limite) {
+        textarea.value = textarea.value.slice(0, limite);
+      }
+      const usados = textarea.value.length;
+      contador.textContent = usados + ' / ' + limite + ' caracteres';
+      contador.style.color = usados >= limite * 0.9 ? '#c0392b' : '#888';
+    }
+
+    textarea.addEventListener('input', actualizarContador);
+    actualizarContador();
   }
 
   function mostrarRubrosExtra(plan, fundador) {
@@ -248,6 +282,8 @@
     }
 
     mostrarRubrosExtra(data.plan, data.fundador);
+    configurarDescripcion(data.plan, data.fundador);
+
     document.getElementById('titulo-nombre').childNodes[0].textContent = (data.nombre || 'Mi perfil') + ' ';
 
     if (data.fundador) document.getElementById('badge-fundador').style.display = 'inline-block';
@@ -282,6 +318,9 @@
     document.getElementById('f-localidad').value = data.localidad || 'Mercedes';
     document.getElementById('f-horario').value = data.horario || '';
     document.getElementById('f-instagram').value = data.instagram || '';
+
+    // Actualizar contador después de cargar el valor guardado
+    document.getElementById('f-descripcion').dispatchEvent(new Event('input'));
 
     await cargarFotos();
   }
