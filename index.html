@@ -61,6 +61,8 @@
     .foto-thumb:hover { opacity: 0.85; }
     .badge-fundador { font-size: 9px; padding: 2px 7px; border-radius: 2px; background: var(--amarillo); color: var(--azul); font-weight: 700; display: inline-block; margin-left: 8px; vertical-align: middle; font-family: 'Barlow', sans-serif; letter-spacing: 0.1em; text-transform: uppercase; }
     .badge-destacado { font-size: 9px; padding: 2px 7px; border-radius: 2px; background: var(--azul); color: var(--amarillo); font-weight: 700; display: inline-block; margin-left: 8px; vertical-align: middle; font-family: 'Barlow', sans-serif; letter-spacing: 0.1em; text-transform: uppercase; }
+    .badge-visible { font-size: 9px; padding: 2px 7px; border-radius: 2px; background: #DCF0E4; color: #1A4A2A; font-weight: 700; display: inline-block; margin-left: 8px; vertical-align: middle; font-family: 'Barlow', sans-serif; letter-spacing: 0.1em; text-transform: uppercase; }
+    .badge-presencia { font-size: 9px; padding: 2px 7px; border-radius: 2px; background: #E8E4DB; color: #6B6560; font-weight: 700; display: inline-block; margin-left: 8px; vertical-align: middle; font-family: 'Barlow', sans-serif; letter-spacing: 0.1em; text-transform: uppercase; }
     .lightbox { display: none; position: fixed; inset: 0; background: rgba(10,15,25,0.92); z-index: 999; align-items: center; justify-content: center; }
     .lightbox.open { display: flex; }
     .lightbox img { max-width: 92vw; max-height: 85vh; border-radius: 4px; object-fit: contain; }
@@ -124,12 +126,6 @@
     { id: 'carpinteria', label: 'Carpintería' }
   ];
 
-  const LIMITES_DESC = {
-    presencia: 120,
-    visible: 350,
-    destacado: 700
-  };
-
   let todos = [];
   let rubroActivo = 'todos';
 
@@ -142,7 +138,7 @@
 
   function ordenPlan(plan, fundador) {
     if (plan === 'destacado') return 1;
-    if (plan === 'visible' && !fundador) return 2;
+    if (plan === 'visible') return 2;
     if (fundador) return 3;
     return 4;
   }
@@ -163,7 +159,6 @@
     const desc = p.descripcion || '';
     if (!desc) return '';
 
-    // Fundadores: texto completo con "Ver más" si supera 350
     if (p.fundador) {
       const limite = 350;
       if (desc.length <= limite) {
@@ -178,17 +173,14 @@
       `;
     }
 
-    // Destacado: texto completo (límite 700, casi nunca se corta)
     if (p.plan === 'destacado') {
       return `<p class="card-desc">${cortarTexto(desc, 700)}</p>`;
     }
 
-    // Visible: corte en 350 sin Ver más
     if (p.plan === 'visible') {
       return `<p class="card-desc">${cortarTexto(desc, 350)}</p>`;
     }
 
-    // Presencia: corte en 120 sin Ver más
     return `<p class="card-desc">${cortarTexto(desc, 120)}</p>`;
   }
 
@@ -206,6 +198,15 @@
     }
   }
 
+  function renderBadges(p) {
+    let badges = '';
+    if (p.fundador) badges += '<span class="badge-fundador">Fundador</span>';
+    if (p.plan === 'destacado') badges += '<span class="badge-destacado">Destacado</span>';
+    if (p.plan === 'visible' && !p.fundador) badges += '<span class="badge-visible">Visible</span>';
+    if (p.plan === 'presencia') badges += '<span class="badge-presencia">Presencia</span>';
+    return badges;
+  }
+
   function renderChips() {
     document.getElementById('chips').innerHTML = RUBROS.map(r =>
       `<button class="chip ${r.id === rubroActivo ? 'active' : ''}" onclick="setRubro('${r.id}')">${r.label}</button>`
@@ -217,7 +218,9 @@
   function filtrar() {
     const lista = document.getElementById('lista');
     const label = document.getElementById('label');
-    let filtrados = rubroActivo === 'todos' ? [...todos] : todos.filter(p => p.rubro_id === rubroActivo);
+    let filtrados = rubroActivo === 'todos' ? [...todos] : todos.filter(p =>
+      p.rubro_id === rubroActivo || p.rubro_id_2 === rubroActivo || p.rubro_id_3 === rubroActivo
+    );
     filtrados.sort((a, b) => ordenPlan(a.plan, a.fundador) - ordenPlan(b.plan, b.fundador));
     label.textContent = filtrados.length + ' profesional' + (filtrados.length !== 1 ? 'es' : '');
     if (!filtrados.length) { lista.innerHTML = '<div class="empty">No hay profesionales en este rubro todavía.</div>'; return; }
@@ -227,10 +230,7 @@
           <div class="card-top">
             <div class="avatar">${iniciales(p.nombre)}</div>
             <div class="card-meta">
-              <div class="card-name">${p.nombre}
-                ${p.fundador ? '<span class="badge-fundador">Fundador</span>' : ''}
-                ${p.plan === 'destacado' ? '<span class="badge-destacado">Destacado</span>' : ''}
-              </div>
+              <div class="card-name">${p.nombre}${renderBadges(p)}</div>
               <div class="card-rubro">${p.rubro}</div>
             </div>
           </div>
