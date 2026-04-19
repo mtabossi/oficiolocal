@@ -45,6 +45,8 @@
     .card-name { font-family: 'Barlow Condensed', sans-serif; font-size: 21px; font-weight: 700; color: var(--azul); letter-spacing: 0.02em; line-height: 1.1; }
     .card-rubro { font-size: 10px; color: var(--gris-texto); text-transform: uppercase; letter-spacing: 0.14em; font-weight: 500; margin-top: 3px; }
     .card-desc { font-family: 'Lora', serif; font-size: 14px; color: #4A4540; line-height: 1.6; margin-bottom: 12px; }
+    .btn-ver-mas { background: none; border: none; font-family: 'Lora', serif; font-size: 13px; color: var(--azul-medio); cursor: pointer; padding: 0; text-decoration: underline; margin-top: -8px; margin-bottom: 10px; display: block; }
+    .btn-ver-mas:hover { color: var(--azul); }
     .card-footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
     .precio { font-size: 13px; color: var(--gris-texto); }
     .precio strong { color: var(--azul); font-weight: 600; }
@@ -122,6 +124,12 @@
     { id: 'carpinteria', label: 'Carpintería' }
   ];
 
+  const LIMITES_DESC = {
+    presencia: 120,
+    visible: 350,
+    destacado: 700
+  };
+
   let todos = [];
   let rubroActivo = 'todos';
 
@@ -141,6 +149,61 @@
 
   function trackWhatsapp(nombre) {
     gtag('event', 'click_whatsapp', { nombre: nombre });
+  }
+
+  function cortarTexto(texto, limite) {
+    if (!texto) return '';
+    if (texto.length <= limite) return texto;
+    const cortado = texto.slice(0, limite);
+    const ultimoEspacio = cortado.lastIndexOf(' ');
+    return (ultimoEspacio > 0 ? cortado.slice(0, ultimoEspacio) : cortado) + '...';
+  }
+
+  function renderDesc(p) {
+    const desc = p.descripcion || '';
+    if (!desc) return '';
+
+    // Fundadores: texto completo con "Ver más" si supera 350
+    if (p.fundador) {
+      const limite = 350;
+      if (desc.length <= limite) {
+        return `<p class="card-desc">${desc}</p>`;
+      }
+      const corto = cortarTexto(desc, limite);
+      const id = 'desc-' + p.id;
+      return `
+        <p class="card-desc" id="${id}-corto">${corto}</p>
+        <p class="card-desc" id="${id}-completo" style="display:none;">${desc}</p>
+        <button class="btn-ver-mas" onclick="toggleDesc('${id}', this)">Ver más</button>
+      `;
+    }
+
+    // Destacado: texto completo (límite 700, casi nunca se corta)
+    if (p.plan === 'destacado') {
+      return `<p class="card-desc">${cortarTexto(desc, 700)}</p>`;
+    }
+
+    // Visible: corte en 350 sin Ver más
+    if (p.plan === 'visible') {
+      return `<p class="card-desc">${cortarTexto(desc, 350)}</p>`;
+    }
+
+    // Presencia: corte en 120 sin Ver más
+    return `<p class="card-desc">${cortarTexto(desc, 120)}</p>`;
+  }
+
+  function toggleDesc(id, btn) {
+    const corto = document.getElementById(id + '-corto');
+    const completo = document.getElementById(id + '-completo');
+    if (completo.style.display === 'none') {
+      corto.style.display = 'none';
+      completo.style.display = 'block';
+      btn.textContent = 'Ver menos';
+    } else {
+      corto.style.display = 'block';
+      completo.style.display = 'none';
+      btn.textContent = 'Ver más';
+    }
   }
 
   function renderChips() {
@@ -171,7 +234,7 @@
               <div class="card-rubro">${p.rubro}</div>
             </div>
           </div>
-          <p class="card-desc">${p.descripcion || ''}</p>
+          ${renderDesc(p)}
           <div class="card-footer">
             <span class="precio"><strong>A convenir</strong></span>
             <a class="wa-btn" href="https://wa.me/${p.telefono}" target="_blank" onclick="trackWhatsapp('${p.nombre.replace(/'/g, "\\'")}')">
