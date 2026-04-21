@@ -138,9 +138,10 @@
 
   function ordenPlan(plan, fundador) {
     if (plan === 'destacado') return 1;
-    if (plan === 'visible') return 2;
+    if (plan === 'visible' && !fundador) return 2;
     if (fundador) return 3;
     return 4;
+  }
   }
 
   function trackWhatsapp(nombre) {
