@@ -90,6 +90,11 @@
   const params = new URLSearchParams(window.location.search);
   const planElegido = params.get('plan') || 'presencia';
 
+  const MP_PLANES = {
+    visible: 'c4bb351ca2b7436abab3674caf1b93e4',
+    destacado: 'cb7908583cf8401cbcd90f963c55999b'
+  };
+
   const PLANES_LABEL = {
     presencia: 'Plan Presencia — Gratis',
     visible: 'Plan Visible — $3.000/mes',
@@ -125,7 +130,11 @@
     if (!email || !pass) { msg.className = 'mensaje error'; msg.textContent = 'Completá todos los campos.'; return; }
     const { error } = await sb.auth.signInWithPassword({ email, password: pass });
     if (error) { msg.className = 'mensaje error'; msg.textContent = 'Email o contraseña incorrectos.'; }
-    else { msg.className = 'mensaje ok'; msg.textContent = '¡Bienvenido! Redirigiendo...'; setTimeout(() => window.location.href = 'https://oficiolocal.com.ar/panel.html', 1500); }
+    else {
+      msg.className = 'mensaje ok';
+      msg.textContent = '¡Bienvenido! Redirigiendo...';
+      setTimeout(() => window.location.href = 'https://oficiolocal.com.ar/panel.html', 1500);
+    }
   }
 
   async function olvideClave() {
@@ -147,15 +156,25 @@
     msg.className = 'mensaje';
     if (!email || !pass) { msg.className = 'mensaje error'; msg.textContent = 'Completá todos los campos.'; return; }
     if (pass.length < 6) { msg.className = 'mensaje error'; msg.textContent = 'La contraseña debe tener al menos 6 caracteres.'; return; }
+
     const { data, error } = await sb.auth.signUp({ email, password: pass });
     if (error) { msg.className = 'mensaje error'; msg.textContent = 'Hubo un error. Intentá de nuevo.'; return; }
 
+    // Esperamos a que el trigger cree el perfil
     await new Promise(r => setTimeout(r, 2000));
-    await sb.from('especialistas').update({ plan: planElegido }).eq('email_auth', email);
 
-    msg.className = 'mensaje ok';
-    msg.textContent = '¡Cuenta creada! Redirigiendo...';
-    setTimeout(() => window.location.href = 'https://oficiolocal.com.ar/panel.html?nuevo=true', 1500);
+    if (planElegido === 'presencia') {
+      // Plan gratis — va directo al panel
+      msg.className = 'mensaje ok';
+      msg.textContent = '¡Cuenta creada! Redirigiendo...';
+      setTimeout(() => window.location.href = 'https://oficiolocal.com.ar/panel.html?nuevo=true', 1500);
+    } else {
+      // Plan pago — lo mandamos a MercadoPago con su email
+      msg.className = 'mensaje ok';
+      msg.textContent = '¡Cuenta creada! Redirigiendo a MercadoPago...';
+      const mpUrl = `https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=${MP_PLANES[planElegido]}&external_reference=${encodeURIComponent(email)}`;
+      setTimeout(() => window.location.href = mpUrl, 1500);
+    }
   }
 </script>
 </body>
