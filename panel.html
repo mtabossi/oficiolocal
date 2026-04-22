@@ -54,6 +54,9 @@
     .ayuda { text-align: center; padding: 1.5rem; font-size: 12px; color: #999; }
     .ayuda a { color: #999; text-decoration: none; }
     .ayuda a:hover { color: var(--azul); }
+    .baja-link { text-align: center; padding: 0 1.5rem 2rem; }
+    .baja-link button { background: none; border: none; font-size: 11px; color: #ccc; text-decoration: underline; cursor: pointer; font-family: 'Barlow', sans-serif; }
+    .baja-link button:hover { color: #999; }
   </style>
 </head>
 <body>
@@ -175,6 +178,10 @@
   <div class="ayuda">
     ¿Tenés alguna consulta? <a href="https://wa.me/5492324477461?text=Hola%20Marcos%2C%20tengo%20una%20consulta%20sobre%20mi%20perfil%20en%20Oficio%20Local." target="_blank">Escribile a Marcos</a>
   </div>
+
+  <div class="baja-link">
+    <button onclick="darDeBaja()">Dar de baja mi perfil</button>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -187,7 +194,7 @@
 
   const RUBROS_LABEL = {
     electricidad: 'Electricidad', plomeria: 'Plomería', gas: 'Gas',
-    albanileria: 'Albañilería', herreria: 'Herrería', jardineria: 'Jardinería',
+    albanileria: 'Construcción', herreria: 'Herrería', jardineria: 'Jardinería',
     pintura: 'Pintura', carpinteria: 'Carpintería'
   };
 
@@ -202,6 +209,8 @@
   let fotos = [];
   let maxFotos = 1;
   let nombreProfesional = '';
+  let planActual = '';
+  let esFundador = false;
 
   function obtenerMaxFotos(plan, fundador) {
     if (plan === 'destacado') return 8;
@@ -273,6 +282,8 @@
 
     especialistaId = data.id;
     nombreProfesional = data.nombre || '';
+    planActual = data.plan;
+    esFundador = data.fundador;
     maxFotos = obtenerMaxFotos(data.plan, data.fundador);
     document.getElementById('contenido').style.display = 'block';
 
@@ -319,7 +330,6 @@
     document.getElementById('f-horario').value = data.horario || '';
     document.getElementById('f-instagram').value = data.instagram || '';
 
-    // Actualizar contador después de cargar el valor guardado
     document.getElementById('f-descripcion').dispatchEvent(new Event('input'));
 
     await cargarFotos();
@@ -426,6 +436,23 @@
       document.getElementById('titulo-nombre').childNodes[0].textContent = nombre + ' ';
       document.getElementById('aviso-nuevo').style.display = 'none';
     }
+  }
+
+  async function darDeBaja() {
+    const confirmado = confirm('¿Estás seguro que querés dar de baja tu perfil? Va a dejar de aparecer en el directorio.');
+    if (!confirmado) return;
+
+    const { error } = await sb.from('especialistas')
+      .update({ activo: false })
+      .eq('id', especialistaId);
+
+    if (error) {
+      alert('Hubo un error. Intentá de nuevo o contactá a Marcos.');
+      return;
+    }
+
+    await sb.auth.signOut();
+    window.location.href = 'https://oficiolocal.com.ar';
   }
 
   async function salir() {
