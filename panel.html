@@ -452,12 +452,12 @@
     }
 
     await sb.auth.signOut();
-    window.location.href = 'https://oficiolocal.com.ar';
-  }
 
-  async function salir() {
-    await sb.auth.signOut();
-    window.location.href = 'https://oficiolocal.com.ar/acceso.html';
+    if (planActual === 'visible' || planActual === 'destacado') {
+      window.location.href = 'https://www.mercadopago.com.ar/subscriptions';
+    } else {
+      window.location.href = 'https://oficiolocal.com.ar';
+    }
   }
 
   init();
