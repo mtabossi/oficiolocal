@@ -86,88 +86,156 @@
       </div>
     </div>
 
-    <div class="card">
-      <h2>Datos del perfil</h2>
-      <div class="form-group">
-        <label>Nombre completo *</label>
-        <input type="text" id="f-nombre" placeholder="Tu nombre y apellido"/>
+    <!-- PANEL ESPECIALISTA -->
+    <div id="panel-especialista">
+      <div class="card">
+        <h2>Datos del perfil</h2>
+        <div class="form-group">
+          <label>Nombre completo *</label>
+          <input type="text" id="f-nombre" placeholder="Tu nombre y apellido"/>
+        </div>
+        <div class="form-group">
+          <label>Rubro principal *</label>
+          <select id="f-rubro-id">
+            <option value="">— Elegí tu rubro —</option>
+            <option value="electricidad">Electricidad</option>
+            <option value="plomeria">Plomería</option>
+            <option value="gas">Gas</option>
+            <option value="albanileria">Construcción</option>
+            <option value="herreria">Herrería</option>
+            <option value="jardineria">Jardinería</option>
+            <option value="pintura">Pintura</option>
+            <option value="carpinteria">Carpintería</option>
+          </select>
+        </div>
+        <div class="form-group" id="grupo-rubro-2" style="display:none;">
+          <label>Rubro secundario (opcional)</label>
+          <select id="f-rubro-id-2">
+            <option value="">— Ninguno —</option>
+            <option value="electricidad">Electricidad</option>
+            <option value="plomeria">Plomería</option>
+            <option value="gas">Gas</option>
+            <option value="albanileria">Construcción</option>
+            <option value="herreria">Herrería</option>
+            <option value="jardineria">Jardinería</option>
+            <option value="pintura">Pintura</option>
+            <option value="carpinteria">Carpintería</option>
+          </select>
+        </div>
+        <div class="form-group" id="grupo-rubro-3" style="display:none;">
+          <label>Tercer rubro (opcional)</label>
+          <select id="f-rubro-id-3">
+            <option value="">— Ninguno —</option>
+            <option value="electricidad">Electricidad</option>
+            <option value="plomeria">Plomería</option>
+            <option value="gas">Gas</option>
+            <option value="albanileria">Construcción</option>
+            <option value="herreria">Herrería</option>
+            <option value="jardineria">Jardinería</option>
+            <option value="pintura">Pintura</option>
+            <option value="carpinteria">Carpintería</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Descripción de tu trabajo *</label>
+          <textarea id="f-descripcion" placeholder="Contá qué hacés y en qué te especializás."></textarea>
+          <div class="contador-desc" id="contador-desc"></div>
+        </div>
+        <div class="form-group">
+          <label>Teléfono (solo números, sin 0 ni 15)</label>
+          <input type="text" id="f-telefono" placeholder="Ej: 2324123456"/>
+        </div>
+        <div class="form-group">
+          <label>Localidad donde trabajás</label>
+          <input type="text" id="f-localidad" placeholder="Mercedes"/>
+        </div>
+        <div class="form-group">
+          <label>Horario de atención</label>
+          <input type="text" id="f-horario" placeholder="Ej: Lunes a viernes de 8 a 18hs"/>
+        </div>
+        <div class="form-group">
+          <label>Instagram (sin @)</label>
+          <input type="text" id="f-instagram" placeholder="tu_usuario"/>
+        </div>
+        <button class="btn-guardar" onclick="guardar()">Guardar cambios</button>
+        <div id="msg-guardar" class="mensaje"></div>
       </div>
-      <div class="form-group">
-        <label>Rubro principal *</label>
-        <select id="f-rubro-id">
-          <option value="">— Elegí tu rubro —</option>
-          <option value="electricidad">Electricidad</option>
-          <option value="plomeria">Plomería</option>
-          <option value="gas">Gas</option>
-          <option value="albanileria">Construcción</option>
-          <option value="herreria">Herrería</option>
-          <option value="jardineria">Jardinería</option>
-          <option value="pintura">Pintura</option>
-          <option value="carpinteria">Carpintería</option>
-          <option value="negocios">Negocios del oficio</option>
-        </select>
+
+      <div class="card">
+        <h2>Fotos de trabajos</h2>
+        <p class="limite-fotos" id="limite-texto"></p>
+        <div id="aviso-plan" class="aviso-plan" style="display:none;"></div>
+        <button class="btn-foto" id="btn-agregar-foto" onclick="subirFoto()">+ Agregar foto</button>
+        <div class="fotos-grid" id="fotos-grid"></div>
+        <div id="msg-fotos" class="mensaje"></div>
       </div>
-      <div class="form-group" id="grupo-rubro-2" style="display:none;">
-        <label>Rubro secundario (opcional)</label>
-        <select id="f-rubro-id-2">
-          <option value="">— Ninguno —</option>
-          <option value="electricidad">Electricidad</option>
-          <option value="plomeria">Plomería</option>
-          <option value="gas">Gas</option>
-          <option value="albanileria">Construcción</option>
-          <option value="herreria">Herrería</option>
-          <option value="jardineria">Jardinería</option>
-          <option value="pintura">Pintura</option>
-          <option value="carpinteria">Carpintería</option>
-        </select>
-      </div>
-      <div class="form-group" id="grupo-rubro-3" style="display:none;">
-        <label>Tercer rubro (opcional)</label>
-        <select id="f-rubro-id-3">
-          <option value="">— Ninguno —</option>
-          <option value="electricidad">Electricidad</option>
-          <option value="plomeria">Plomería</option>
-          <option value="gas">Gas</option>
-          <option value="albanileria">Construcción</option>
-          <option value="herreria">Herrería</option>
-          <option value="jardineria">Jardinería</option>
-          <option value="pintura">Pintura</option>
-          <option value="carpinteria">Carpintería</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Descripción de tu trabajo *</label>
-        <textarea id="f-descripcion" placeholder="Contá qué hacés y en qué te especializás."></textarea>
-        <div class="contador-desc" id="contador-desc"></div>
-      </div>
-      <div class="form-group">
-        <label>Teléfono (solo números, sin 0 ni 15)</label>
-        <input type="text" id="f-telefono" placeholder="Ej: 2324123456"/>
-      </div>
-      <div class="form-group">
-        <label>Localidad donde trabajás</label>
-        <input type="text" id="f-localidad" placeholder="Mercedes"/>
-      </div>
-      <div class="form-group">
-        <label>Horario de atención</label>
-        <input type="text" id="f-horario" placeholder="Ej: Lunes a viernes de 8 a 18hs"/>
-      </div>
-      <div class="form-group">
-        <label>Instagram (sin @)</label>
-        <input type="text" id="f-instagram" placeholder="tu_usuario"/>
-      </div>
-      <button class="btn-guardar" onclick="guardar()">Guardar cambios</button>
-      <div id="msg-guardar" class="mensaje"></div>
     </div>
 
-    <div class="card">
-      <h2>Fotos de trabajos</h2>
-      <p class="limite-fotos" id="limite-texto"></p>
-      <div id="aviso-plan" class="aviso-plan" style="display:none;"></div>
-      <button class="btn-foto" id="btn-agregar-foto" onclick="subirFoto()">+ Agregar foto</button>
-      <div class="fotos-grid" id="fotos-grid"></div>
-      <div id="msg-fotos" class="mensaje"></div>
+    <!-- PANEL COMERCIO -->
+    <div id="panel-comercio" style="display:none;">
+      <div class="card">
+        <h2>Datos del negocio</h2>
+        <div class="form-group">
+          <label>Nombre del negocio *</label>
+          <input type="text" id="c-nombre" placeholder="Nombre de tu local o comercio"/>
+        </div>
+        <div class="form-group">
+          <label>Tipo de negocio *</label>
+          <select id="c-subcategoria">
+            <option value="">— Elegí el tipo —</option>
+            <option value="Maderera">Maderera</option>
+            <option value="Pinturería">Pinturería</option>
+            <option value="Ferretería">Ferretería</option>
+            <option value="Corralón">Corralón</option>
+            <option value="Sanitarios">Sanitarios</option>
+            <option value="Herramientas">Herramientas</option>
+            <option value="Electricidad">Electricidad</option>
+            <option value="Otros">Otros</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Descripción del negocio *</label>
+          <textarea id="c-descripcion" placeholder="Contá qué ofrecés, qué productos o servicios tiene tu negocio."></textarea>
+          <div class="contador-desc" id="c-contador-desc"></div>
+        </div>
+        <div class="form-group">
+          <label>Dirección *</label>
+          <input type="text" id="c-direccion" placeholder="Ej: Av. San Martín 450, Mercedes"/>
+        </div>
+        <div class="form-group">
+          <label>Horario de atención</label>
+          <input type="text" id="c-horario" placeholder="Ej: Lunes a viernes de 8 a 18hs"/>
+        </div>
+        <div class="form-group">
+          <label>Teléfono (solo números, sin 0 ni 15)</label>
+          <input type="text" id="c-telefono" placeholder="Ej: 2324123456"/>
+        </div>
+        <div class="form-group">
+          <label>Instagram (sin @)</label>
+          <input type="text" id="c-instagram" placeholder="tu_negocio"/>
+        </div>
+        <div class="form-group">
+          <label>Sitio web (opcional)</label>
+          <input type="text" id="c-web" placeholder="Ej: www.tunegocio.com.ar"/>
+        </div>
+        <div class="form-group">
+          <label>Zona de entrega (opcional)</label>
+          <input type="text" id="c-zona-entrega" placeholder="Ej: Mercedes y alrededores hasta 20km"/>
+        </div>
+        <button class="btn-guardar" onclick="guardarComercio()">Guardar cambios</button>
+        <div id="msg-guardar-comercio" class="mensaje"></div>
+      </div>
+
+      <div class="card">
+        <h2>Fotos del negocio</h2>
+        <p class="limite-fotos" id="c-limite-texto"></p>
+        <div id="c-aviso-plan" class="aviso-plan" style="display:none;"></div>
+        <button class="btn-foto" id="c-btn-agregar-foto" onclick="subirFoto()">+ Agregar foto</button>
+        <div class="fotos-grid" id="fotos-grid"></div>
+        <div id="msg-fotos" class="mensaje"></div>
+      </div>
     </div>
+
   </div>
 
   <div id="no-vinculado" style="display:none;" class="no-vinculado">
@@ -212,6 +280,7 @@
   let nombreProfesional = '';
   let planActual = '';
   let esFundador = false;
+  let esComercio = false;
 
   function obtenerMaxFotos(plan, fundador) {
     if (plan === 'destacado') return 8;
@@ -228,18 +297,28 @@
     const limite = obtenerLimiteDesc(plan, fundador);
     const textarea = document.getElementById('f-descripcion');
     const contador = document.getElementById('contador-desc');
-
     textarea.setAttribute('maxlength', limite);
-
     function actualizarContador() {
-      if (textarea.value.length > limite) {
-        textarea.value = textarea.value.slice(0, limite);
-      }
+      if (textarea.value.length > limite) textarea.value = textarea.value.slice(0, limite);
       const usados = textarea.value.length;
       contador.textContent = usados + ' / ' + limite + ' caracteres';
       contador.style.color = usados >= limite * 0.9 ? '#c0392b' : '#888';
     }
+    textarea.addEventListener('input', actualizarContador);
+    actualizarContador();
+  }
 
+  function configurarDescripcionComercio(plan) {
+    const limite = obtenerLimiteDesc(plan, false);
+    const textarea = document.getElementById('c-descripcion');
+    const contador = document.getElementById('c-contador-desc');
+    textarea.setAttribute('maxlength', limite);
+    function actualizarContador() {
+      if (textarea.value.length > limite) textarea.value = textarea.value.slice(0, limite);
+      const usados = textarea.value.length;
+      contador.textContent = usados + ' / ' + limite + ' caracteres';
+      contador.style.color = usados >= limite * 0.9 ? '#c0392b' : '#888';
+    }
     textarea.addEventListener('input', actualizarContador);
     actualizarContador();
   }
@@ -285,16 +364,12 @@
     nombreProfesional = data.nombre || '';
     planActual = data.plan;
     esFundador = data.fundador;
+    esComercio = data.rubro_id === 'negocios';
     maxFotos = obtenerMaxFotos(data.plan, data.fundador);
     document.getElementById('contenido').style.display = 'block';
 
     const sinNombre = !data.nombre || data.nombre.trim() === '';
-    if (sinNombre) {
-      document.getElementById('aviso-nuevo').style.display = 'block';
-    }
-
-    mostrarRubrosExtra(data.plan, data.fundador);
-    configurarDescripcion(data.plan, data.fundador);
+    if (sinNombre) document.getElementById('aviso-nuevo').style.display = 'block';
 
     document.getElementById('titulo-nombre').childNodes[0].textContent = (data.nombre || 'Mi perfil') + ' ';
 
@@ -321,17 +396,34 @@
       btnMejorar.style.display = 'inline';
     }
 
-    document.getElementById('f-nombre').value = data.nombre || '';
-    document.getElementById('f-rubro-id').value = data.rubro_id || '';
-    document.getElementById('f-rubro-id-2').value = data.rubro_id_2 || '';
-    document.getElementById('f-rubro-id-3').value = data.rubro_id_3 || '';
-    document.getElementById('f-descripcion').value = data.descripcion || '';
-    document.getElementById('f-telefono').value = data.telefono || '';
-    document.getElementById('f-localidad').value = data.localidad || 'Mercedes';
-    document.getElementById('f-horario').value = data.horario || '';
-    document.getElementById('f-instagram').value = data.instagram || '';
-
-    document.getElementById('f-descripcion').dispatchEvent(new Event('input'));
+    if (esComercio) {
+      document.getElementById('panel-especialista').style.display = 'none';
+      document.getElementById('panel-comercio').style.display = 'block';
+      document.getElementById('c-nombre').value = data.nombre || '';
+      document.getElementById('c-subcategoria').value = data.subcategoria || '';
+      document.getElementById('c-descripcion').value = data.descripcion || '';
+      document.getElementById('c-direccion').value = data.direccion || '';
+      document.getElementById('c-horario').value = data.horario || '';
+      document.getElementById('c-telefono').value = data.telefono || '';
+      document.getElementById('c-instagram').value = data.instagram || '';
+      document.getElementById('c-web').value = data.web || '';
+      document.getElementById('c-zona-entrega').value = data.zona_entrega || '';
+      configurarDescripcionComercio(data.plan);
+      document.getElementById('c-descripcion').dispatchEvent(new Event('input'));
+    } else {
+      mostrarRubrosExtra(data.plan, data.fundador);
+      configurarDescripcion(data.plan, data.fundador);
+      document.getElementById('f-nombre').value = data.nombre || '';
+      document.getElementById('f-rubro-id').value = data.rubro_id || '';
+      document.getElementById('f-rubro-id-2').value = data.rubro_id_2 || '';
+      document.getElementById('f-rubro-id-3').value = data.rubro_id_3 || '';
+      document.getElementById('f-descripcion').value = data.descripcion || '';
+      document.getElementById('f-telefono').value = data.telefono || '';
+      document.getElementById('f-localidad').value = data.localidad || 'Mercedes';
+      document.getElementById('f-horario').value = data.horario || '';
+      document.getElementById('f-instagram').value = data.instagram || '';
+      document.getElementById('f-descripcion').dispatchEvent(new Event('input'));
+    }
 
     await cargarFotos();
   }
@@ -344,9 +436,9 @@
 
   function renderFotos() {
     const grid = document.getElementById('fotos-grid');
-    const limite = document.getElementById('limite-texto');
-    const btnFoto = document.getElementById('btn-agregar-foto');
-    const aviso = document.getElementById('aviso-plan');
+    const limite = document.getElementById(esComercio ? 'c-limite-texto' : 'limite-texto');
+    const btnFoto = document.getElementById(esComercio ? 'c-btn-agregar-foto' : 'btn-agregar-foto');
+    const aviso = document.getElementById(esComercio ? 'c-aviso-plan' : 'aviso-plan');
 
     limite.textContent = `Tenés ${fotos.length} de ${maxFotos} foto${maxFotos !== 1 ? 's' : ''} cargada${fotos.length !== 1 ? 's' : ''} según tu plan.`;
 
@@ -356,7 +448,7 @@
       aviso.textContent = maxFotos === 1
         ? 'Tu plan Presencia incluye 1 foto. Actualizá al Plan Visible para subir hasta 3 fotos.'
         : maxFotos === 3
-        ? 'Llegaste al límite de 3 fotos de tu plan. Actualizá al Plan Destacado para subir hasta 8 fotos.'
+        ? 'Llegaste al límite de 3 fotos. Actualizá al Plan Destacado para subir hasta 8 fotos.'
         : 'Llegaste al límite de 8 fotos de tu plan.';
     } else {
       btnFoto.disabled = false;
@@ -439,26 +531,56 @@
     }
   }
 
+  async function guardarComercio() {
+    const msg = document.getElementById('msg-guardar-comercio');
+    msg.className = 'mensaje';
+    const nombre = document.getElementById('c-nombre').value.trim();
+    const subcategoria = document.getElementById('c-subcategoria').value;
+    const descripcion = document.getElementById('c-descripcion').value.trim();
+    const direccion = document.getElementById('c-direccion').value.trim();
+    if (!nombre || !subcategoria || !descripcion || !direccion) {
+      msg.className = 'mensaje error';
+      msg.textContent = 'Completá nombre, tipo de negocio, descripción y dirección.';
+      return;
+    }
+    const telefonoRaw = document.getElementById('c-telefono').value.trim();
+    const telefono = telefonoRaw ? formatearTelefono(telefonoRaw) : '';
+    const { error } = await sb.from('especialistas').update({
+      nombre,
+      subcategoria,
+      descripcion,
+      direccion,
+      telefono,
+      horario: document.getElementById('c-horario').value.trim(),
+      instagram: document.getElementById('c-instagram').value.trim(),
+      web: document.getElementById('c-web').value.trim(),
+      zona_entrega: document.getElementById('c-zona-entrega').value.trim()
+    }).eq('id', especialistaId);
+    if (error) { msg.className = 'mensaje error'; msg.textContent = 'Error al guardar. Intentá de nuevo.'; }
+    else {
+      msg.className = 'mensaje ok';
+      msg.textContent = '¡Cambios guardados correctamente!';
+      document.getElementById('titulo-nombre').childNodes[0].textContent = nombre + ' ';
+      document.getElementById('aviso-nuevo').style.display = 'none';
+    }
+  }
+
   async function darDeBaja() {
     const confirmado = confirm('¿Estás seguro que querés dar de baja tu perfil? Va a dejar de aparecer en el directorio.');
     if (!confirmado) return;
-
-    const { error } = await sb.from('especialistas')
-      .update({ activo: false })
-      .eq('id', especialistaId);
-
-    if (error) {
-      alert('Hubo un error. Intentá de nuevo o contactá a Marcos.');
-      return;
-    }
-
+    const { error } = await sb.from('especialistas').update({ activo: false }).eq('id', especialistaId);
+    if (error) { alert('Hubo un error. Intentá de nuevo o contactá a Marcos.'); return; }
     await sb.auth.signOut();
-
     if (planActual === 'visible' || planActual === 'destacado') {
       window.location.href = 'https://www.mercadopago.com.ar/subscriptions';
     } else {
       window.location.href = 'https://oficiolocal.com.ar';
     }
+  }
+
+  async function salir() {
+    await sb.auth.signOut();
+    window.location.href = 'https://oficiolocal.com.ar/acceso.html';
   }
 
   init();
