@@ -55,6 +55,9 @@
     .wa-btn svg { width: 14px; height: 14px; flex-shrink: 0; fill: #25D366; }
     .ig-link { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--gris-texto); text-decoration: none; font-weight: 500; margin-top: 4px; }
     .ig-link:hover { color: var(--azul); }
+    .web-link { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--gris-texto); text-decoration: none; font-weight: 500; margin-top: 4px; }
+    .web-link:hover { color: var(--azul); }
+    .direccion { font-size: 12px; color: var(--gris-texto); margin-top: 4px; }
     .fotos-row { display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; padding: 0 1.25rem 1.25rem; }
     .fotos-row::-webkit-scrollbar { display: none; }
     .foto-thumb { width: 100px; height: 72px; object-fit: cover; border-radius: 3px; flex-shrink: 0; cursor: pointer; border: 1px solid var(--gris-calido); transition: opacity 0.15s; }
@@ -63,6 +66,7 @@
     .badge-destacado { font-size: 9px; padding: 2px 7px; border-radius: 2px; background: var(--azul); color: var(--amarillo); font-weight: 700; display: inline-block; margin-left: 8px; vertical-align: middle; font-family: 'Barlow', sans-serif; letter-spacing: 0.1em; text-transform: uppercase; }
     .badge-visible { font-size: 9px; padding: 2px 7px; border-radius: 2px; background: #DCF0E4; color: #1A4A2A; font-weight: 700; display: inline-block; margin-left: 8px; vertical-align: middle; font-family: 'Barlow', sans-serif; letter-spacing: 0.1em; text-transform: uppercase; }
     .badge-presencia { font-size: 9px; padding: 2px 7px; border-radius: 2px; background: #E8E4DB; color: #6B6560; font-weight: 700; display: inline-block; margin-left: 8px; vertical-align: middle; font-family: 'Barlow', sans-serif; letter-spacing: 0.1em; text-transform: uppercase; }
+    .badge-subcategoria { font-size: 9px; padding: 2px 7px; border-radius: 2px; background: #E8E4DB; color: #1B2E4B; font-weight: 700; display: inline-block; margin-left: 8px; vertical-align: middle; font-family: 'Barlow', sans-serif; letter-spacing: 0.1em; text-transform: uppercase; }
     .lightbox { display: none; position: fixed; inset: 0; background: rgba(10,15,25,0.92); z-index: 999; align-items: center; justify-content: center; }
     .lightbox.open { display: flex; }
     .lightbox img { max-width: 92vw; max-height: 85vh; border-radius: 4px; object-fit: contain; }
@@ -177,14 +181,8 @@
       `;
     }
 
-    if (p.plan === 'destacado') {
-      return `<p class="card-desc">${cortarTexto(desc, 700)}</p>`;
-    }
-
-    if (p.plan === 'visible') {
-      return `<p class="card-desc">${cortarTexto(desc, 350)}</p>`;
-    }
-
+    if (p.plan === 'destacado') return `<p class="card-desc">${cortarTexto(desc, 700)}</p>`;
+    if (p.plan === 'visible') return `<p class="card-desc">${cortarTexto(desc, 350)}</p>`;
     return `<p class="card-desc">${cortarTexto(desc, 120)}</p>`;
   }
 
@@ -204,11 +202,44 @@
 
   function renderBadges(p) {
     let badges = '';
-    if (p.fundador) badges += '<span class="badge-fundador">Fundador</span>';
-    if (p.plan === 'destacado') badges += '<span class="badge-destacado">Destacado</span>';
-    if (p.plan === 'visible' && !p.fundador) badges += '<span class="badge-visible">Visible</span>';
-    if (p.plan === 'presencia') badges += '<span class="badge-presencia">Presencia</span>';
+    if (p.rubro_id === 'negocios' && p.subcategoria) {
+      badges += `<span class="badge-subcategoria">${p.subcategoria}</span>`;
+    } else {
+      if (p.fundador) badges += '<span class="badge-fundador">Fundador</span>';
+      if (p.plan === 'destacado') badges += '<span class="badge-destacado">Destacado</span>';
+      if (p.plan === 'visible' && !p.fundador) badges += '<span class="badge-visible">Visible</span>';
+      if (p.plan === 'presencia') badges += '<span class="badge-presencia">Presencia</span>';
+    }
     return badges;
+  }
+
+  function renderCardComercio(p) {
+    return `
+      <div class="card">
+        <div class="card-body">
+          <div class="card-top">
+            <div class="avatar">${iniciales(p.nombre)}</div>
+            <div class="card-meta">
+              <div class="card-name">${p.nombre}${renderBadges(p)}</div>
+              <div class="card-rubro">${p.subcategoria || 'Negocio del oficio'}</div>
+            </div>
+          </div>
+          ${renderDesc(p)}
+          ${p.direccion ? `<p class="direccion">📍 ${p.direccion}</p>` : ''}
+          ${p.horario ? `<p class="direccion">🕐 ${p.horario}</p>` : ''}
+          <div class="card-footer" style="margin-top:12px;">
+            <span></span>
+            <a class="wa-btn" href="https://wa.me/${p.telefono}" target="_blank" onclick="trackWhatsapp('${p.nombre.replace(/'/g, "\\'")}')">
+              <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.122 1.532 5.855L.053 23.447a.5.5 0 00.605.605l5.594-1.479A11.94 11.94 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.9a9.87 9.87 0 01-5.031-1.378l-.36-.214-3.732.986.998-3.648-.235-.374A9.861 9.861 0 012.1 12C2.1 6.532 6.532 2.1 12 2.1c5.468 0 9.9 4.432 9.9 9.9 0 5.468-4.432 9.9-9.9 9.9z"/></svg>
+              Contactar
+            </a>
+          </div>
+          ${p.instagram ? `<a class="ig-link" href="https://instagram.com/${p.instagram}" target="_blank">📷 @${p.instagram}</a>` : ''}
+          ${p.web ? `<a class="web-link" href="${p.web}" target="_blank">🌐 ${p.web}</a>` : ''}
+        </div>
+        ${p.fotos && p.fotos.length ? `<div class="fotos-row">${p.fotos.map(f => `<img class="foto-thumb" src="${f.url}" onclick="abrirLb(this.src)" alt="foto" loading="lazy"/>`).join('')}</div>` : ''}
+      </div>
+    `;
   }
 
   function renderChips() {
@@ -222,13 +253,34 @@
   function filtrar() {
     const lista = document.getElementById('lista');
     const label = document.getElementById('label');
-    let filtrados = rubroActivo === 'todos' ? [...todos] : todos.filter(p =>
-      p.rubro_id === rubroActivo || p.rubro_id_2 === rubroActivo || p.rubro_id_3 === rubroActivo
-    );
+
+    let filtrados;
+
+    if (rubroActivo === 'todos') {
+      // En "Todos" solo mostramos especialistas, no comercios
+      filtrados = todos.filter(p => p.rubro_id !== 'negocios');
+    } else if (rubroActivo === 'negocios') {
+      // En "Negocios" solo mostramos comercios
+      filtrados = todos.filter(p => p.rubro_id === 'negocios');
+    } else {
+      // En rubros específicos solo especialistas de ese rubro
+      filtrados = todos.filter(p =>
+        p.rubro_id !== 'negocios' && (
+          p.rubro_id === rubroActivo || p.rubro_id_2 === rubroActivo || p.rubro_id_3 === rubroActivo
+        )
+      );
+    }
+
     filtrados.sort((a, b) => ordenPlan(a.plan, a.fundador) - ordenPlan(b.plan, b.fundador));
-    label.textContent = filtrados.length + ' profesional' + (filtrados.length !== 1 ? 'es' : '');
-    if (!filtrados.length) { lista.innerHTML = '<div class="empty">No hay profesionales en este rubro todavía.</div>'; return; }
-    lista.innerHTML = filtrados.map(p => `
+    label.textContent = filtrados.length + (rubroActivo === 'negocios' ? ' negocio' : ' profesional') + (filtrados.length !== 1 ? 's' : '');
+
+    if (!filtrados.length) {
+      lista.innerHTML = '<div class="empty">No hay ' + (rubroActivo === 'negocios' ? 'negocios' : 'profesionales') + ' en esta categoría todavía.</div>';
+      return;
+    }
+
+    lista.innerHTML = filtrados.map(p =>
+      p.rubro_id === 'negocios' ? renderCardComercio(p) : `
       <div class="card">
         <div class="card-body">
           <div class="card-top">
