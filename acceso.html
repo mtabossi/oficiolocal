@@ -90,21 +90,28 @@
   const params = new URLSearchParams(window.location.search);
   const planElegido = params.get('plan') || 'presencia';
 
+  const esComercio = planElegido.includes('-comercio');
+  const planBase = planElegido.replace('-comercio', '');
+
   const MP_PLANES = {
-    visible: 'c4bb351ca2b7436abab3674caf1b93e4',
-    destacado: 'cb7908583cf8401cbcd90f963c55999b'
+    'visible': 'c4bb351ca2b7436abab3674caf1b93e4',
+    'destacado': 'cb7908583cf8401cbcd90f963c55999b',
+    'visible-comercio': 'e7a1ffa0d08e408c89f91e716917821c',
+    'destacado-comercio': '1030e51f6fc5426fabc6d5678e84fe1e'
   };
 
   const PLANES_LABEL = {
     presencia: 'Plan Presencia — Gratis',
     visible: 'Plan Visible — $3.000/mes',
-    destacado: 'Plan Destacado — $6.000/mes'
+    destacado: 'Plan Destacado — $6.000/mes',
+    'visible-comercio': 'Plan Visible Comercio — $8.000/mes',
+    'destacado-comercio': 'Plan Destacado Comercio — $10.000/mes'
   };
 
   if (planElegido && planElegido !== 'presencia') {
     const aviso = document.getElementById('aviso-plan');
     aviso.style.display = 'block';
-    aviso.textContent = '✅ Plan seleccionado: ' + PLANES_LABEL[planElegido];
+    aviso.textContent = '✅ Plan seleccionado: ' + (PLANES_LABEL[planElegido] || planElegido);
     mostrarTabRegistro();
   }
 
@@ -163,13 +170,19 @@
     // Esperamos a que el trigger cree el perfil
     await new Promise(r => setTimeout(r, 2000));
 
-    if (planElegido === 'presencia') {
-      // Plan gratis — va directo al panel
+    // Si es comercio, asignamos el rubro negocios automáticamente
+    if (esComercio) {
+      await sb.from('especialistas').update({
+        rubro_id: 'negocios',
+        rubro: 'Negocios del oficio'
+      }).eq('email_auth', email);
+    }
+
+    if (planBase === 'presencia') {
       msg.className = 'mensaje ok';
       msg.textContent = '¡Cuenta creada! Redirigiendo...';
       setTimeout(() => window.location.href = 'https://oficiolocal.com.ar/panel.html?nuevo=true', 1500);
     } else {
-      // Plan pago — lo mandamos a MercadoPago con su email
       msg.className = 'mensaje ok';
       msg.textContent = '¡Cuenta creada! Redirigiendo a MercadoPago...';
       const mpUrl = `https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=${MP_PLANES[planElegido]}&external_reference=${encodeURIComponent(email)}`;
