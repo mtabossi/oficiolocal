@@ -15,6 +15,11 @@
     .container { max-width: 720px; margin: 0 auto; padding: 2.5rem 1.5rem; }
     .titulo { font-family: 'Barlow Condensed', sans-serif; font-size: 32px; font-weight: 700; color: var(--azul); text-align: center; margin-bottom: 0.5rem; }
     .subtitulo { font-family: 'Lora', serif; font-size: 15px; font-style: italic; color: #666; text-align: center; margin-bottom: 2.5rem; }
+    .selector-tipo { display: flex; gap: 1rem; margin-bottom: 2.5rem; }
+    .btn-tipo { flex: 1; padding: 1.25rem; border-radius: 4px; border: 2px solid var(--gris-calido); background: #fff; font-family: 'Barlow Condensed', sans-serif; font-size: 20px; font-weight: 700; color: var(--azul); cursor: pointer; text-align: center; transition: all 0.15s; }
+    .btn-tipo:hover { border-color: var(--azul); }
+    .btn-tipo.activo { border-color: var(--amarillo); background: var(--azul); color: #fff; }
+    .btn-tipo small { display: block; font-family: 'Barlow', sans-serif; font-size: 12px; font-weight: 400; margin-top: 4px; opacity: 0.7; }
     .planes { display: flex; flex-direction: column; gap: 1.25rem; }
     .plan { background: #fff; border-radius: 4px; border: 1px solid var(--gris-calido); border-left: 4px solid var(--gris-calido); padding: 1.5rem; }
     .plan.destacado { border-left-color: var(--amarillo); box-shadow: 0 4px 20px rgba(27,46,75,0.08); }
@@ -39,6 +44,8 @@
     .btn-destacado:hover { opacity: 0.9; }
     .nota { font-size: 12px; color: #888; text-align: center; margin-top: 2rem; font-family: 'Lora', serif; font-style: italic; }
     .volver { display: block; text-align: center; margin-top: 1.5rem; font-size: 13px; color: var(--azul); text-decoration: none; }
+    .seccion-planes { display: none; }
+    .seccion-planes.visible { display: block; }
   </style>
 </head>
 <body>
@@ -48,64 +55,123 @@
 </header>
 <div class="container">
   <h1 class="titulo">Sumá tu negocio al directorio</h1>
-  <p class="subtitulo">Elegí el plan que mejor se adapta a tu momento.</p>
+  <p class="subtitulo">Primero contanos quién sos.</p>
 
-  <div class="planes">
-
-    <div class="plan">
-      <div class="plan-header">
-        <div><div class="plan-nombre">Plan Presencia <span class="badge badge-gratis">Gratis</span></div></div>
-        <div class="plan-precio">$0 <span>/mes</span></div>
-      </div>
-      <ul class="features">
-        <li><span class="check">✓</span> 1 foto de perfil</li>
-        <li><span class="check">✓</span> Descripción corta</li>
-        <li><span class="check">✓</span> Botón de contacto por WhatsApp</li>
-        <li><span class="check">✓</span> 1 rubro</li>
-        <li><span class="check">✓</span> Aparece en el listado general</li>
-      </ul>
-      <a href="#" class="btn-plan btn-gratis" onclick="elegirPresencia(); return false;">Registrarme gratis</a>
-    </div>
-
-    <div class="plan destacado">
-      <div class="plan-header">
-        <div><div class="plan-nombre">Plan Visible <span class="badge badge-popular">Más elegido</span></div></div>
-        <div class="plan-precio">$3.000 <span>/mes</span></div>
-      </div>
-      <div class="promo-tag">🎯 Precio promocional por lanzamiento</div>
-      <ul class="features">
-        <li><span class="check">✓</span> Hasta 3 fotos de trabajos</li>
-        <li><span class="check">✓</span> Descripción extendida con especialidades</li>
-        <li><span class="check">✓</span> Listado de servicios</li>
-        <li><span class="check">✓</span> Horario de atención</li>
-        <li><span class="check">✓</span> Botón de contacto por WhatsApp</li>
-        <li><span class="check">✓</span> Hasta 2 rubros</li>
-        <li><span class="check">✓</span> Aparece antes que los perfiles gratuitos</li>
-      </ul>
-      <a href="#" class="btn-plan btn-pago" onclick="irAPagar('visible'); return false;">Suscribirme — $3.000/mes</a>
-    </div>
-
-    <div class="plan destacado">
-      <div class="plan-header">
-        <div><div class="plan-nombre">Plan Destacado ⭐</div></div>
-        <div class="plan-precio">$6.000 <span>/mes</span></div>
-      </div>
-      <div class="promo-tag">🎯 Precio promocional por lanzamiento</div>
-      <ul class="features">
-        <li><span class="check">✓</span> Galería de hasta 8 fotos</li>
-        <li><span class="check">✓</span> Descripción extendida</li>
-        <li><span class="check">✓</span> Hasta 2 testimonios de clientes</li>
-        <li><span class="check">✓</span> Botón de contacto por WhatsApp</li>
-        <li><span class="check">✓</span> Hasta 3 rubros</li>
-        <li><span class="check">✓</span> Badge "Destacado" visible</li>
-        <li><span class="check">✓</span> Primero en el listado de su categoría</li>
-      </ul>
-      <a href="#" class="btn-plan btn-destacado" onclick="irAPagar('destacado'); return false;">Suscribirme — $6.000/mes</a>
-    </div>
-
+  <div class="selector-tipo">
+    <button class="btn-tipo" onclick="mostrarPlanes('especialista')">
+      Soy especialista
+      <small>Electricista, plomero, pintor y otros oficios</small>
+    </button>
+    <button class="btn-tipo" onclick="mostrarPlanes('comercio')">
+      Tengo un negocio
+      <small>Local comercial relacionado al rubro</small>
+    </button>
   </div>
 
-  <p class="nota">Tu plan se activa automáticamente una vez confirmado el pago.<br>¿Dudas? Contactá a Marcos al WhatsApp 2324477461.</p>
+  <div class="seccion-planes" id="planes-especialista">
+    <div class="planes">
+      <div class="plan">
+        <div class="plan-header">
+          <div><div class="plan-nombre">Plan Presencia <span class="badge badge-gratis">Gratis</span></div></div>
+          <div class="plan-precio">$0 <span>/mes</span></div>
+        </div>
+        <ul class="features">
+          <li><span class="check">✓</span> 1 foto de perfil</li>
+          <li><span class="check">✓</span> Descripción corta</li>
+          <li><span class="check">✓</span> Botón de contacto por WhatsApp</li>
+          <li><span class="check">✓</span> 1 rubro</li>
+          <li><span class="check">✓</span> Aparece en el listado general</li>
+        </ul>
+        <a href="#" class="btn-plan btn-gratis" onclick="elegirPresencia(); return false;">Registrarme gratis</a>
+      </div>
+
+      <div class="plan destacado">
+        <div class="plan-header">
+          <div><div class="plan-nombre">Plan Visible <span class="badge badge-popular">Más elegido</span></div></div>
+          <div class="plan-precio">$3.000 <span>/mes</span></div>
+        </div>
+        <div class="promo-tag">🎯 Precio promocional por lanzamiento</div>
+        <ul class="features">
+          <li><span class="check">✓</span> Hasta 3 fotos de trabajos</li>
+          <li><span class="check">✓</span> Descripción extendida con especialidades</li>
+          <li><span class="check">✓</span> Horario de atención</li>
+          <li><span class="check">✓</span> Botón de contacto por WhatsApp</li>
+          <li><span class="check">✓</span> Hasta 2 rubros</li>
+          <li><span class="check">✓</span> Aparece antes que los perfiles gratuitos</li>
+        </ul>
+        <a href="#" class="btn-plan btn-pago" onclick="irAPagar('visible-especialista'); return false;">Suscribirme — $3.000/mes</a>
+      </div>
+
+      <div class="plan destacado">
+        <div class="plan-header">
+          <div><div class="plan-nombre">Plan Destacado ⭐</div></div>
+          <div class="plan-precio">$6.000 <span>/mes</span></div>
+        </div>
+        <div class="promo-tag">🎯 Precio promocional por lanzamiento</div>
+        <ul class="features">
+          <li><span class="check">✓</span> Galería de hasta 8 fotos</li>
+          <li><span class="check">✓</span> Descripción extendida</li>
+          <li><span class="check">✓</span> Botón de contacto por WhatsApp</li>
+          <li><span class="check">✓</span> Hasta 3 rubros</li>
+          <li><span class="check">✓</span> Badge "Destacado" visible</li>
+          <li><span class="check">✓</span> Primero en el listado de su categoría</li>
+        </ul>
+        <a href="#" class="btn-plan btn-destacado" onclick="irAPagar('destacado-especialista'); return false;">Suscribirme — $6.000/mes</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="seccion-planes" id="planes-comercio">
+    <div class="planes">
+      <div class="plan">
+        <div class="plan-header">
+          <div><div class="plan-nombre">Plan Presencia <span class="badge badge-gratis">Gratis</span></div></div>
+          <div class="plan-precio">$0 <span>/mes</span></div>
+        </div>
+        <ul class="features">
+          <li><span class="check">✓</span> 1 foto del local</li>
+          <li><span class="check">✓</span> Descripción corta</li>
+          <li><span class="check">✓</span> Botón de contacto por WhatsApp</li>
+          <li><span class="check">✓</span> Aparece en Negocios del oficio</li>
+        </ul>
+        <a href="#" class="btn-plan btn-gratis" onclick="elegirPresencia(); return false;">Registrarme gratis</a>
+      </div>
+
+      <div class="plan destacado">
+        <div class="plan-header">
+          <div><div class="plan-nombre">Plan Visible <span class="badge badge-popular">Más elegido</span></div></div>
+          <div class="plan-precio">$8.000 <span>/mes</span></div>
+        </div>
+        <div class="promo-tag">🎯 Precio promocional por lanzamiento</div>
+        <ul class="features">
+          <li><span class="check">✓</span> Hasta 3 fotos del local</li>
+          <li><span class="check">✓</span> Descripción extendida</li>
+          <li><span class="check">✓</span> Horario de atención</li>
+          <li><span class="check">✓</span> Botón de contacto por WhatsApp</li>
+          <li><span class="check">✓</span> Aparece antes que los perfiles gratuitos</li>
+        </ul>
+        <a href="#" class="btn-plan btn-pago" onclick="irAPagar('visible-comercio'); return false;">Suscribirme — $8.000/mes</a>
+      </div>
+
+      <div class="plan destacado">
+        <div class="plan-header">
+          <div><div class="plan-nombre">Plan Destacado ⭐</div></div>
+          <div class="plan-precio">$10.000 <span>/mes</span></div>
+        </div>
+        <div class="promo-tag">🎯 Precio promocional por lanzamiento</div>
+        <ul class="features">
+          <li><span class="check">✓</span> Galería de hasta 8 fotos</li>
+          <li><span class="check">✓</span> Descripción extendida</li>
+          <li><span class="check">✓</span> Botón de contacto por WhatsApp</li>
+          <li><span class="check">✓</span> Badge "Destacado" visible</li>
+          <li><span class="check">✓</span> Primero en el listado de negocios</li>
+        </ul>
+        <a href="#" class="btn-plan btn-destacado" onclick="irAPagar('destacado-comercio'); return false;">Suscribirme — $10.000/mes</a>
+      </div>
+    </div>
+  </div>
+
+  <p class="nota" id="nota-planes" style="display:none;">Tu plan se activa automáticamente una vez confirmado el pago.<br>¿Dudas? Contactá a Marcos al WhatsApp 2324477461.</p>
   <a href="index.html" class="volver">← Volver al directorio</a>
 </div>
 
@@ -116,9 +182,31 @@
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   const MP_PLANES = {
-    visible: 'c4bb351ca2b7436abab3674caf1b93e4',
-    destacado: 'cb7908583cf8401cbcd90f963c55999b'
+    'visible-especialista': 'c4bb351ca2b7436abab3674caf1b93e4',
+    'destacado-especialista': 'cb7908583cf8401cbcd90f963c55999b',
+    'visible-comercio': 'e7a1ffa0d08e408c89f91e716917821c',
+    'destacado-comercio': '1030e51f6fc5426fabc6d5678e84fe1e'
   };
+
+  const TIPOS_PLAN = {
+    'visible-especialista': 'visible',
+    'destacado-especialista': 'destacado',
+    'visible-comercio': 'visible',
+    'destacado-comercio': 'destacado'
+  };
+
+  const ES_COMERCIO = {
+    'visible-comercio': true,
+    'destacado-comercio': true
+  };
+
+  function mostrarPlanes(tipo) {
+    document.querySelectorAll('.btn-tipo').forEach(b => b.classList.remove('activo'));
+    document.querySelectorAll('.seccion-planes').forEach(s => s.classList.remove('visible'));
+    event.target.closest('.btn-tipo').classList.add('activo');
+    document.getElementById('planes-' + tipo).classList.add('visible');
+    document.getElementById('nota-planes').style.display = 'block';
+  }
 
   async function elegirPresencia() {
     const { data: { user } } = await sb.auth.getUser();
@@ -129,16 +217,17 @@
     }
   }
 
-  async function irAPagar(plan) {
+  async function irAPagar(planKey) {
     const { data: { user } } = await sb.auth.getUser();
+    const esComercio = ES_COMERCIO[planKey] || false;
 
     if (user) {
-      // Ya está logueado — lo mandamos directo a MP con su email
-      const url = `https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=${MP_PLANES[plan]}&external_reference=${encodeURIComponent(user.email)}`;
+      const url = `https://www.mercadopago.com.ar/subscriptions/checkout?preapproval_plan_id=${MP_PLANES[planKey]}&external_reference=${encodeURIComponent(user.email)}`;
       window.open(url, '_blank');
     } else {
-      // No está logueado — primero se registra, después paga
-      window.location.href = `https://oficiolocal.com.ar/acceso.html?plan=${plan}`;
+      const plan = TIPOS_PLAN[planKey];
+      const sufijo = esComercio ? '-comercio' : '';
+      window.location.href = `https://oficiolocal.com.ar/acceso.html?plan=${plan}${sufijo}`;
     }
   }
 </script>
