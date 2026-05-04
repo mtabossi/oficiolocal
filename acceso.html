@@ -95,7 +95,9 @@
 
   const MP_PLANES = {
     'visible': 'c4bb351ca2b7436abab3674caf1b93e4',
+    'visible-especialista': 'c4bb351ca2b7436abab3674caf1b93e4',
     'destacado': 'cb7908583cf8401cbcd90f963c55999b',
+    'destacado-especialista': 'cb7908583cf8401cbcd90f963c55999b',
     'visible-comercio': 'e7a1ffa0d08e408c89f91e716917821c',
     'destacado-comercio': '1030e51f6fc5426fabc6d5678e84fe1e'
   };
@@ -103,7 +105,9 @@
   const PLANES_LABEL = {
     presencia: 'Plan Presencia — Gratis',
     visible: 'Plan Visible — $3.000/mes',
+    'visible-especialista': 'Plan Visible — $3.000/mes',
     destacado: 'Plan Destacado — $6.000/mes',
+    'destacado-especialista': 'Plan Destacado — $6.000/mes',
     'visible-comercio': 'Plan Visible Comercio — $8.000/mes',
     'destacado-comercio': 'Plan Destacado Comercio — $10.000/mes'
   };
@@ -167,10 +171,8 @@
     const { data, error } = await sb.auth.signUp({ email, password: pass });
     if (error) { msg.className = 'mensaje error'; msg.textContent = 'Hubo un error. Intentá de nuevo.'; return; }
 
-    // Esperamos a que el trigger cree el perfil
     await new Promise(r => setTimeout(r, 2000));
 
-    // Si es comercio, asignamos el rubro negocios automáticamente
     if (esComercio) {
       await sb.from('especialistas').update({
         rubro_id: 'negocios',
@@ -178,7 +180,7 @@
       }).eq('email_auth', email);
     }
 
-    if (planBase === 'presencia') {
+    if (planBase === 'presencia' || planElegido === 'presencia') {
       msg.className = 'mensaje ok';
       msg.textContent = '¡Cuenta creada! Redirigiendo...';
       setTimeout(() => window.location.href = 'https://oficiolocal.com.ar/panel.html?nuevo=true', 1500);
