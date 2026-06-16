@@ -168,7 +168,7 @@
     if (!email || !pass) { msg.className = 'mensaje error'; msg.textContent = 'Completá todos los campos.'; return; }
     if (pass.length < 6) { msg.className = 'mensaje error'; msg.textContent = 'La contraseña debe tener al menos 6 caracteres.'; return; }
 
-    const { data, error } = await sb.auth.signUp({ email, password: pass });
+    const { data, error } = await sb.auth.signUp({ email, password: pass, options: { data: { origin: 'oficiolocal.com.ar' } } });
     if (error) { msg.className = 'mensaje error'; msg.textContent = 'Hubo un error. Intentá de nuevo.'; return; }
 
     await new Promise(r => setTimeout(r, 2000));
