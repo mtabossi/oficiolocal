@@ -434,7 +434,7 @@
   }
 
   async function cargar() {
-    const { data: especialistas } = await sb.from('especialistas').select('*').eq('activo', true).not('nombre', 'is', null);
+  const { data: especialistas } = await sb.from('especialistas').select('*').eq('activo', true).not('nombre', 'is', null).not('localidad', 'eq', 'Chivilcoy');
     const { data: fotos } = await sb.from('fotos').select('*').order('orden');
     todos = especialistas.map(e => ({
       ...e,
